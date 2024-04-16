@@ -1,7 +1,9 @@
+import { Dimensions } from "react-native";
+const { width, height } = Dimensions.get("window");
 export const COLORS = {
   Black: "#000000",
   BlackRGB10: "rgba(0,0,0,0.1)",
-  Orange: "#FF5524",
+  Orange: "#FE3323",
   OrangeRGBA0: "rgba(255,85,36,0)",
   Grey: "#333333",
   DarkGrey: "#0b0b0b",
@@ -12,6 +14,7 @@ export const COLORS = {
   WhiteRGBA32: "rgba(255,255,255,0.32)",
   WhiteRGBA15: "rgba(255,255,255,0.15)",
 };
+
 export const SPACING = {
   space_2: 2,
   space_4: 4,
@@ -27,7 +30,10 @@ export const SPACING = {
   space_32: 32,
   space_36: 36,
 };
+
 export const SIZES = {
+  height: height,
+  width: width,
   font1: 16,
   font2: 18,
   font3: 24,
@@ -47,18 +53,6 @@ export const SIZES = {
   radius2: 18,
   radius3: 22,
   radius4: 90,
-};
-
-export const FONTFAMILY = {
-  poppins_black: "Roboto",
-  poppins_bold: "Roboto",
-  poppins_extrabold: "Roboto",
-  poppins_extralight: "Roboto",
-  poppins_light: "Roboto",
-  poppins_medium: "Roboto",
-  poppins_regular: "Roboto",
-  poppins_semibold: "Roboto",
-  poppins_thin: "Roboto",
 };
 
 export const FONTSIZE = {
@@ -81,5 +75,7 @@ export const BORDERRADIUS = {
   radius_20: 20,
   radius_25: 25,
 };
-const appTheme = { COLORS, SIZES, SPACING, FONTFAMILY, FONTSIZE, BORDERRADIUS };
+
+const appTheme = { COLORS, SIZES, SPACING, FONTSIZE, BORDERRADIUS };
+
 export default appTheme;

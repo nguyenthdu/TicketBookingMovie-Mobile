@@ -123,9 +123,10 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 style={{
                   backgroundColor: COLORS.Orange,
-                  borderRadius: 5,
-                  marginTop: 10,
-                  padding: 10,
+                  borderRadius: 24,
+                  marginHorizontal: 10,
+                  marginTop: 5,
+                  padding: 8,
                   justifyContent: "center",
                   flexDirection: "row",
                   alignItems: "center",
@@ -185,9 +186,10 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 style={{
                   backgroundColor: COLORS.Orange,
-                  borderRadius: 5,
-                  marginTop: 10,
-                  padding: 10,
+                  borderRadius: 24,
+                  marginHorizontal: 10,
+                  marginTop: 5,
+                  padding: 8,
                   justifyContent: "center",
                   flexDirection: "row",
                   alignItems: "center",

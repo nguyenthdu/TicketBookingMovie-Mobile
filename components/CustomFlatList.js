@@ -152,7 +152,7 @@ const CustomFlatList = ({ movies, scrollX, navigation }) => {
                     }}
                     style={{
                       backgroundColor: COLORS.Orange,
-                      borderRadius: 5,
+                      borderRadius: 24,
                       padding: 10,
                       justifyContent: "center",
                       flexDirection: "row",

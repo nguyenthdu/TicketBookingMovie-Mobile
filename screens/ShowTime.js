@@ -252,7 +252,7 @@ export default function ShowTime({ route, navigation }) {
             alignItems: "center",
           }}
         >
-          <MaterialIcons name="arrow-back" size={30} color={COLORS.Grey} />
+          <MaterialIcons name="arrow-back" size={30} color={COLORS.DarkGrey} />
         </TouchableOpacity>
         <Text
           //2 hàng
@@ -392,7 +392,7 @@ export default function ShowTime({ route, navigation }) {
                 <Text
                   style={{
                     fontSize: 14,
-                    color: isSelected ? COLORS.White : COLORS.Grey,
+                    color: isSelected ? COLORS.White : COLORS.DarkGrey,
                   }}
                 >
                   {convertWeekday(weekday, item)}
@@ -477,17 +477,16 @@ export default function ShowTime({ route, navigation }) {
         style={{
           backgroundColor: COLORS.Orange,
           borderRadius: 24,
-          marginTop: 10,
-          height: 50,
+          padding: 10,
           justifyContent: "center",
           alignItems: "center",
           marginHorizontal: 16,
-          marginBottom: 16,
+          marginBottom: 20,
         }}
       >
         <Text
           style={{
-            fontSize: 20,
+            fontSize: FONTSIZE.size_20,
             color: COLORS.White,
           }}
         >

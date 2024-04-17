@@ -8,7 +8,6 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
-  SafeAreaView,
   ScrollView,
 } from "react-native";
 import { COLORS, SIZES } from "../theme/theme";
@@ -19,7 +18,7 @@ import {
   fetchMoviesShowing,
   fetchMoviesTrending,
   fetchMoviesUpcoming,
-} from "../api/HomeAPI";
+} from "../api/MoiveAPI";
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {

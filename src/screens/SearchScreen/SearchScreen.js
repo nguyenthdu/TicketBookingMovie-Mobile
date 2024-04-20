@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Animated, SafeAreaView, Text } from "react-native";
-import CustomFlatList from "../components/CustomFlatList";
+import { Animated, SafeAreaView, StyleSheet } from "react-native";
+import CustomFlatList from "../../components/FlatList/CustomFlatList";
+import { baseUrl } from "../../utils/containUrl";
+
 export default function SearchScreen() {
   const [movies, setMovies] = React.useState([]);
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const fetchMovies = async () => {
     try {
-      const response = await fetch(
-        "http://172.16.11.83:8080/api/movie/upcoming"
-      );
+      const response = await fetch(`${baseUrl}/api/movie/upcoming`);
       const data = await response.json();
       return data.content;
     } catch (error) {

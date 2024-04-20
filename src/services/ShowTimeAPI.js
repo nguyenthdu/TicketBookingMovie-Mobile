@@ -1,5 +1,7 @@
 const API_SHOWTIME_URL = "http://172.16.11.83:8080/api/showtime";
 const API_CINEMA_URL = "http://172.16.11.83:8080/api/cinema";
+import axios from "../utils/axios-custom";
+
 // API lấy danh sách ngày chiếu của một phim
 export const fetchDateShowTime = async (movieId, cinemaId) => {
   try {
@@ -13,9 +15,8 @@ export const fetchDateShowTime = async (movieId, cinemaId) => {
       redirect: "follow",
     };
 
-    const response = await fetch(`${API_SHOWTIME_URL}/dates`, requestOptions);
-    const data = await response.json();
-    return data.content;
+    const response = await axios.get(`/api/showtime/dates`, requestOptions);
+    return response.data.content;
   } catch (error) {
     console.error("Error fetching showtime date:", error);
     throw error;
@@ -42,9 +43,8 @@ export const fetchAllCinemas = async () => {
       redirect: "follow",
     };
 
-    const response = await fetch(`${API_CINEMA_URL}`, requestOptions);
-    const data = await response.json();
-    return data.content;
+    const response = await axios.get(`/api/cinema`, requestOptions);
+    return response.data.content;
   } catch (error) {
     console.error("Error fetching cinemas:", error);
     throw error;

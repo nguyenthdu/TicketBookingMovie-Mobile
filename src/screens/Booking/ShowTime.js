@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { COLORS, FONTSIZE } from "../theme/theme";
+import { COLORS, FONTSIZE } from "../../theme/theme";
 const { width, height } = Dimensions.get("window");
 export default function ShowTime({ route, navigation }) {
   const data = [

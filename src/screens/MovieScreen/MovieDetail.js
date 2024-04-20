@@ -1,19 +1,17 @@
-import React, { useState, useCallback, useRef } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Button,
-  Alert,
-  ImageBackground,
   Dimensions,
   FlatList,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import OpenYoutubeLink from "../components/OpenYoutubeLink";
-import { LinearGradient } from "expo-linear-gradient";
-import { COLORS, FONTSIZE } from "../theme/theme";
+import OpenYoutubeLink from "../../components/OpenYoutubeLink";
+import { COLORS } from "../../theme/theme";
 const { width, height } = Dimensions.get("window");
 export default function MovieDetail({ route, navigation }) {
   const { movie } = route.params;

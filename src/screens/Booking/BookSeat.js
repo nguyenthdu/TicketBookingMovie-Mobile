@@ -1,15 +1,14 @@
+import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
   Dimensions,
   FlatList,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  ScrollView,
+  View,
 } from "react-native";
-import React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
-import { COLORS, FONTSIZE } from "../theme/theme";
+import { COLORS, FONTSIZE } from "../../theme/theme";
 const { width, height } = Dimensions.get("window");
 
 //data seat

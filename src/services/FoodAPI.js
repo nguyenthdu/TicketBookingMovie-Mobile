@@ -1,12 +1,11 @@
-const API_BASE_URL = "http://172.16.11.83:8080/api/food";
+import axios from "../utils/axios-custom";
 
 export const getAllFood = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}`);
-    const data = await response.json();
-    return data.content;
+    const response = await axios.get(`/api/food`);
+    return response.data.content;
   } catch (error) {
-    console.error("Error fetching food:", error);
-    throw error;
+    console.log("Error fetching food:", error);
+    return error;
   }
 };

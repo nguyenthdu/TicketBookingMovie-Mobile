@@ -11,14 +11,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import CustomFlatList from "../components/CustomFlatList";
-import { COLORS } from "../theme/theme";
+import CustomFlatList from "../../components/FlatList/CustomFlatList";
+import { COLORS } from "../../theme/theme";
 
 import {
   fetchMoviesShowing,
   fetchMoviesTrending,
   fetchMoviesUpcoming,
-} from "../services/MoiveAPI";
+} from "../../services/MoiveAPI";
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {

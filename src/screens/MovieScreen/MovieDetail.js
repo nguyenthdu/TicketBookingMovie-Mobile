@@ -251,31 +251,16 @@ export default function MovieDetail({ route, navigation }) {
           <View
             style={{ flexDirection: "row", flexWrap: "wrap", maxWidth: "70%" }}
           >
-            {movie.cast.split(",").map((actor, index) => (
-              <View
-                key={index}
-                style={{ flexDirection: "row", alignItems: "center" }}
-              >
-                {index > 0 && (
-                  <Text
-                    style={{ color: "#DFDFDE", fontSize: 16, marginLeft: 5 }}
-                  >
-                    ,
-                  </Text>
-                )}
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{
-                    color: "#DFDFDE",
-                    fontSize: 16,
-                    marginLeft: index > 0 ? 5 : 0,
-                  }}
-                >
-                  {actor.trim()}
-                </Text>
-              </View>
-            ))}
+            <Text
+              // numberOfLines={1}
+              // ellipsizeMode="tail"
+              style={{
+                color: "#DFDFDE",
+                fontSize: 16,
+              }}
+            >
+              {movie.cast}
+            </Text>
           </View>
         </View>
         <View

@@ -1,17 +1,17 @@
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect } from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
   Dimensions,
   FlatList,
   Image,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import { getAllFood } from "../services/FoodAPI";
 import { COLORS, FONTSIZE } from "../theme/theme";
 const { width, height } = Dimensions.get("window");
-import { getAllFood } from "../api/FoodAPI";
 export default function Food({ route, navigation }) {
   const [food, setFood] = React.useState([]);
   const [selectedQuantities, setSelectedQuantities] = React.useState({});

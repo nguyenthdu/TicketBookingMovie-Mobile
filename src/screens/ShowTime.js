@@ -1,19 +1,15 @@
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
 import {
+  Dimensions,
   FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
-  ScrollView,
-  SafeArray,
-  SafeAreaView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { COLORS, FONTSIZE } from "../theme/theme";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Dropdown } from "react-native-element-dropdown";
-import { fetchDateShowTime, fetchAllCinemas } from "../api/ShowTimeAPI";
+import { COLORS, FONTSIZE } from "../theme/theme";
 const { width, height } = Dimensions.get("window");
 export default function ShowTime({ route, navigation }) {
   const data = [

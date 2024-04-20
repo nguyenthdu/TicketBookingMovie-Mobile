@@ -1,18 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import TabNavigator from "./navigators/TabNavigator";
-import MovieDetail from "./screens/MovieDetail";
-import ShowTime from "./screens/ShowTime";
-import MoviesShowing from "./screens/MoviesShowing";
-import MoviesUpcoming from "./screens/MoviesUpcoming";
-import BookSeat from "./screens/BookSeat";
-import Food from "./screens/Food";
-import ReviewSummary from "./screens/ReviewSummary";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import TabNavigator from "./src/navigators/TabNavigator";
+import BookSeat from "./src/screens/BookSeat";
+import Food from "./src/screens/Food";
+import MovieDetail from "./src/screens/MovieDetail";
+import MoviesShowing from "./src/screens/MoviesShowing";
+import MoviesUpcoming from "./src/screens/MoviesUpcoming";
+import ReviewSummary from "./src/screens/ReviewSummary";
+import ShowTime from "./src/screens/ShowTime";
 const Stack = createNativeStackNavigator();
 
-import Logo from "./screens/Logo";
+import Logo from "./src/screens/Logo";
 function App() {
   return (
     <NavigationContainer>

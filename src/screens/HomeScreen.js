@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  Animated,
+  Dimensions,
   FlatList,
   Image,
-  Dimensions,
-  TouchableOpacity,
-  Animated,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { COLORS, SIZES } from "../theme/theme";
 import CustomFlatList from "../components/CustomFlatList";
-import { MaterialIcons } from "@expo/vector-icons";
+import { COLORS } from "../theme/theme";
 
 import {
   fetchMoviesShowing,
   fetchMoviesTrending,
   fetchMoviesUpcoming,
-} from "../api/MoiveAPI";
+} from "../services/MoiveAPI";
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {

@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import OpenYoutubeLink from "../../components/OpenYoutubeLink";
 import { COLORS } from "../../theme/theme";
+import { dateFormat } from "../../utils/dateFormat";
 const { width, height } = Dimensions.get("window");
 export default function MovieDetail({ route, navigation }) {
   const { movie } = route.params;
-  const castArray = movie.cast.split(",");
   return (
     //log data
     <View
@@ -312,7 +312,7 @@ export default function MovieDetail({ route, navigation }) {
               marginLeft: 5,
             }}
           >
-            {movie.releaseDate}
+            {dateFormat(movie.releaseDate)}
           </Text>
         </View>
       </View>

@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
         const trendingData = await fetchMoviesTrending();
         const moviesWithKeys = trendingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         const moviesWithEmptyItems = [
           { id: "empty-left" },
@@ -52,11 +52,11 @@ const HomeScreen = ({ navigation }) => {
         const showingData = await fetchMoviesShowing();
         const moviesUpcomingWithKeys = upcomingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         const moviesShowingWithKeys = showingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         setMoviesUpcoming(moviesUpcomingWithKeys);
         setMoviesShowing(moviesShowingWithKeys);

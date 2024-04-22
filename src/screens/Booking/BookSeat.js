@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import BookingSummary from "../../components/Booking/BookingSummary";
+import Divider from "../../components/Divider/Divider";
 import Seat from "../../components/Seat/Seat";
+import SeatOption from "../../components/Seat/SeatOption";
 import { fetchSeats } from "../../services/ShowTimeAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import styles from "./Styles";
@@ -252,10 +255,12 @@ export default function BookSeat({ navigation, route }) {
       />
     );
   };
+
   //handle book seat
   const handleBookSeat = () => {
     navigation.navigate("Food", {});
   };
+
   // Hàm phân chia mảng thành các mảng con có độ dài cho trước
   const chunkArray = (arr, chunkSize) => {
     const chunkedArray = [];
@@ -265,50 +270,24 @@ export default function BookSeat({ navigation, route }) {
     return chunkedArray;
   };
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
-      {console.log(selectedSeats)}
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.goBack();
-        }}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 10,
-          borderBottomWidth: 1,
-          marginTop: 20,
-          borderBottomColor: COLORS.Grey,
-        }}
-      >
+      <TouchableOpacity onPress={() => handleGoBack()} style={styles.btnGoBack}>
         <MaterialIcons name="arrow-back" size={24} color="black" />
-        <Text
-          style={{
-            flex: 1,
-            fontSize: FONTSIZE.size_24,
-            fontWeight: "bold",
-            marginLeft: 10,
-            textAlign: "center",
-            color: COLORS.Orange,
-          }}
-        >
-          Đặt vé
-        </Text>
+        <Text style={[styles.textStyle, styles.titleStyle]}>Đặt vé</Text>
       </TouchableOpacity>
-      <Text
+      <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
+      {/* render danh sách ghế */}
+      <View
         style={{
-          fontSize: FONTSIZE.size_16,
-          fontWeight: "bold",
-          textAlign: "center",
-          color: COLORS.Black,
+          flex: 4.5 / 6,
+          flexDirection: "row",
           marginTop: 10,
         }}
-      >
-        Màn hình
-      </Text>
-      <View
-        style={{ flexDirection: "row", marginTop: 10, marginHorizontal: 16 }}
       >
         <FlatList
           data={chunkArray(data, 8)}
@@ -328,245 +307,34 @@ export default function BookSeat({ navigation, route }) {
           numColumns={1}
         />
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 10,
-          marginHorizontal: 16,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              borderWidth: 1.5,
-              borderColor: COLORS.DarkGrey,
-              width: 20,
-              height: 20,
-              borderRadius: 5,
-              marginRight: 10,
-            }}
-          />
-          <Text>Ghế thường</Text>
+      <Divider />
+      {/* Giải thích loại ghế */}
+      <View style={{ flex: 0.7 / 6 }}>
+        <View style={styles.SeatOptionContainer}>
+          <SeatOption type="bd" color={COLORS.DarkGrey} label="Ghế thường" />
+          <SeatOption type="bd" color={COLORS.Orange} label="Ghế vip" />
+          <SeatOption type="bd" color={COLORS.Purple} label="Ghế đôi" />
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              borderWidth: 1.5,
-              borderColor: COLORS.Orange,
-              width: 20,
-              height: 20,
-              borderRadius: 5,
-              marginRight: 10,
-            }}
-          />
-          <Text>Ghế vip</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              borderWidth: 1.5,
-              borderColor: COLORS.Purple,
-              width: 20,
-              height: 20,
-              borderRadius: 5,
-              marginRight: 10,
-            }}
-          />
-          <Text>Ghế đôi</Text>
+        <View style={styles.SeatOptionContainer}>
+          <SeatOption type="bgc" color={COLORS.DarkGrey} label="Ghế đã bán" />
+          <SeatOption type="bgc" color={COLORS.Orange} label="Ghế đang chọn" />
         </View>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-around",
-          alignItems: "center",
-          marginHorizontal: 16,
-          marginTop: 10,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: COLORS.DarkGrey,
-              width: 20,
-              height: 20,
-              borderRadius: 5,
-              marginRight: 10,
-            }}
-          />
-          <Text>Ghế đã bán</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: COLORS.Orange,
-              width: 20,
-              height: 20,
-              borderRadius: 5,
-              marginRight: 10,
-            }}
-          />
-          <Text>Ghế đang chọn</Text>
-        </View>
-      </View>
-
-      {/* TODO: bottom */}
-      <View
-        style={{
-          borderBottomWidth: 1,
-          borderBottomColor: COLORS.Grey,
-          marginHorizontal: 16,
-          marginTop: 10,
-        }}
-      />
-      <View
-        style={{
-          flex: 1,
-          marginHorizontal: 16,
-          marginTop: 10,
-          flexDirection: "row",
-          justifyContent: "center",
-          height: height / 6,
-        }}
-      >
-        <View
-          style={{
-            flex: 2,
-            flexDirection: "column",
-            alignItems: "center",
-            width: width * 0.6,
-          }}
-        >
+      {/* hiện danh sách ghế đã chọn */}
+      <Divider />
+      <View style={{ flex: 1.8 / 6 }}>
+        <BookingSummary selectedSeats={selectedSeats} selectedFoods={[]} />
+        <TouchableOpacity onPress={handleBookSeat} style={styles.btnContinue}>
           <Text
             style={{
+              color: COLORS.White,
               fontSize: FONTSIZE.size_20,
-              fontWeight: "bold",
-              color: COLORS.Black,
             }}
           >
-            Ghế đã chọn
+            Tiếp tục
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-            }}
-          >
-            {selectedSeats.map((seat) => (
-              <Text
-                key={seat}
-                style={{
-                  backgroundColor: COLORS.Orange,
-                  padding: 5,
-                  margin: 5,
-                  color: COLORS.White,
-                  fontSize: FONTSIZE.size_14,
-                  borderRadius: 5,
-                }}
-              >
-                {seat}
-              </Text>
-            ))}
-          </View>
-        </View>
-        <View
-          style={{
-            borderLeftWidth: 1,
-            borderLeftColor: COLORS.Grey,
-            height: height / 6,
-          }}
-        />
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            width: width * 0.4,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_20,
-              fontWeight: "bold",
-              color: COLORS.Black,
-            }}
-          >
-            Tổng tiền
-          </Text>
-          <Text
-            style={{
-              marginTop: 10,
-              fontSize: FONTSIZE.size_24,
-              fontWeight: "bold",
-              color: COLORS.Orange,
-              flexWrap: "wrap",
-            }}
-          >
-            {selectedSeats.length * 100000}
-          </Text>
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_16,
-              color: COLORS.Black,
-            }}
-          >
-            VNĐ
-          </Text>
-        </View>
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity
-        onPress={handleBookSeat}
-        style={{
-          backgroundColor: COLORS.Orange,
-          borderRadius: 24,
-          marginHorizontal: 16,
-          padding: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            color: COLORS.White,
-            fontSize: FONTSIZE.size_20,
-          }}
-        >
-          Tiếp tục
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }

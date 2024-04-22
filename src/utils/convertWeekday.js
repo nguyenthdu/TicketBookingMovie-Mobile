@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const convertWeekday = (weekday, date) => {
   const today = new Date();
   const itemDate = new Date(date);
@@ -47,4 +49,48 @@ export const filterAndSortDates = (dateArray) => {
 
   // const formatDate = filteredDates.map((date) => dateFormat(new Date(date)));
   return filteredDates;
+};
+export const filterAndSortShowTimes = (showTimes) => {
+  // Lấy thời gian hiện tại
+  const currentTime = new Date();
+
+  // Lọc ra các suất chiếu sau thời gian hiện tại
+  const filteredShowTimes = showTimes.filter((showTime) => {
+    const showDateTime = new Date(showTime.showDate + "T" + showTime.showTime);
+    return showDateTime >= currentTime;
+  });
+
+  // Sắp xếp các suất chiếu theo thời gian bắt đầu từ nhỏ đến lớn
+  filteredShowTimes.sort((a, b) => {
+    const dateTimeA = new Date(a.showDate + "T" + a.showTime);
+    const dateTimeB = new Date(b.showDate + "T" + b.showTime);
+    return dateTimeA - dateTimeB;
+  });
+
+  return filteredShowTimes;
+};
+
+// nhóm các suất chiếu cùng phòng chiếu
+export const groupShowTimesByRoom = (showTimes) => {
+  const groupedShowTimes = showTimes.reduce((result, showTime) => {
+    const roomName = showTime.roomName;
+    const existingRoomIndex = result.findIndex(
+      (item) => item.roomName === roomName
+    );
+    if (existingRoomIndex === -1) {
+      // Nếu phòng chưa tồn tại trong kết quả, thêm mới
+      result.push({ roomName: roomName, time: [showTime] });
+    } else {
+      // Nếu phòng đã tồn tại, thêm vào mảng thời gian của phòng đó
+      result[existingRoomIndex].time.push(showTime);
+    }
+    return result;
+  }, []);
+
+  return groupedShowTimes;
+};
+
+export const formatTime = (time) => {
+  const timeObject = moment(time, "HH:mm");
+  return timeObject.format("HH:mm");
 };

@@ -1,14 +1,16 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import Seat from "../../components/Seat/Seat";
+import { fetchSeats } from "../../services/ShowTimeAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
+import styles from "./Styles";
 const { width, height } = Dimensions.get("window");
 
 //data seat
@@ -213,46 +215,23 @@ const data = [
   },
 ];
 
-const Seat = ({ seatData, onPress }) => {
-  const { name, status, type } = seatData;
-  let backgroundColor = COLORS.White;
-  let seatTextColor = COLORS.Black;
+export default function BookSeat({ navigation, route }) {
+  const { isFocusTime } = route.params;
 
-  if (status === 0) {
-    backgroundColor = COLORS.DarkGrey; // Set background color for unavailable seats
-    seatTextColor = COLORS.White;
-  } else if (status === 2) {
-    backgroundColor = COLORS.Orange; // Set background color for selected seats
-    seatTextColor = COLORS.White;
-  } else {
-    backgroundColor = COLORS.White; // Set background color for available seats
-    seatTextColor = COLORS.Black;
-  }
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [seatData, setSeatData] = useState([]);
 
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[
-        styles.seat,
-        {
-          backgroundColor,
-          borderColor:
-            type === "VIP"
-              ? COLORS.Orange
-              : type === "SWEETBOX"
-              ? COLORS.Purple
-              : COLORS.Grey,
-          width: type === "SWEETBOX" ? 50 : width / 11 - 1,
-        },
-      ]}
-    >
-      <Text style={[styles.seatText, { color: seatTextColor }]}>{name}</Text>
-    </TouchableOpacity>
-  );
-};
+  useEffect(() => {
+    if (isFocusTime) {
+      fetchSeatData(isFocusTime.id);
+    }
+  }, [isFocusTime]);
 
-export default function BookSeat({ navigation }) {
-  const [selectedSeats, setSelectedSeats] = React.useState([]);
+  const fetchSeatData = async (id) => {
+    const resSeatData = await fetchSeats(id);
+    setSeatData(resSeatData);
+    console.log("check seat: ", resSeatData[0]);
+  };
 
   const renderSeat = ({ item }) => {
     const { id, name, status, type } = item;
@@ -275,7 +254,7 @@ export default function BookSeat({ navigation }) {
   };
   //handle book seat
   const handleBookSeat = () => {
-    navigation.navigate("Food", { selectedSeats });
+    navigation.navigate("Food", {});
   };
   // Hàm phân chia mảng thành các mảng con có độ dài cho trước
   const chunkArray = (arr, chunkSize) => {
@@ -591,24 +570,3 @@ export default function BookSeat({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.White,
-  },
-  seat: {
-    width: width / 11 - 1,
-    height: width / 11 - 1,
-    borderWidth: 2,
-    borderColor: COLORS.Grey,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 1,
-    borderRadius: 5,
-  },
-  seatText: {
-    fontSize: FONTSIZE.size_14,
-    fontWeight: "bold",
-  },
-});

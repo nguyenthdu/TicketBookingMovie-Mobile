@@ -24,3 +24,25 @@ export const fetchShowTime = async (movieId, cinemaId, date) => {
     return error;
   }
 };
+
+// lấy danh sách ghế
+export const fetchSeats = async (showTimeId) => {
+  try {
+    const response = await axios.get(`/api/showtime/seat/${showTimeId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching seats:", error);
+    return error;
+  }
+};
+
+// lấy danh sách loại ghế
+export const fetchTypeSeat = async () => {
+  try {
+    const response = await axios.get(`/api/typeSeat`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching seat types:", error);
+    return error;
+  }
+};

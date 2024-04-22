@@ -36,7 +36,12 @@ export default function ShowTime({ route, navigation }) {
   const [isFocusCinema, setIsFocusCinema] = useState(false);
 
   const [isFocusDate, setIsFocusDate] = useState(null);
-  const [isFocusTime, setIsFocusTime] = useState({});
+  const [isFocusTime, setIsFocusTime] = useState(
+    showTimes.reduce((acc, cur) => {
+      acc[cur.roomName] = null;
+      return acc;
+    }, {}) || {}
+  );
 
   useEffect(() => {
     if (showDate.length <= 0) {
@@ -90,6 +95,10 @@ export default function ShowTime({ route, navigation }) {
     setShowTimes(groupTimeByRoom);
   };
 
+  useEffect(() => {
+    console.log("isFocusTime", isFocusTime);
+  }, [isFocusTime]);
+
   const handleTimeSelect = (roomName, time) => {
     setIsFocusTime((prevSelectedTimes) => {
       const newSelectedTimes = { ...prevSelectedTimes };
@@ -104,9 +113,8 @@ export default function ShowTime({ route, navigation }) {
   };
 
   const handleBookSeat = () => {
-    navigation.navigate("BookSeat", {
-      showTime: isFocusTime,
-    });
+    const roomKey = Object.keys(isFocusTime)[0];
+    navigation.navigate("BookSeat", { isFocusTime: isFocusTime[roomKey] });
   };
 
   const renderLabelLocation = () => {

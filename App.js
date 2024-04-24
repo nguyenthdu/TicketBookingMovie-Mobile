@@ -7,7 +7,7 @@ import Food from "./src/screens/Food";
 import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
 import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
-import ReviewSummary from "./src/screens/ReviewSummary";
+import Payment from "./src/screens/Booking/Payment";
 const Stack = createNativeStackNavigator();
 
 // import Logo from "./src/screens/Logo";
@@ -27,7 +27,7 @@ function App() {
         <Stack.Screen name="MoviesUpcoming" component={MoviesUpcoming} />
         <Stack.Screen name="BookSeat" component={BookSeat} />
         <Stack.Screen name="Food" component={Food} />
-        <Stack.Screen name="ReviewSummary" component={ReviewSummary} />
+        <Stack.Screen name="Payment" component={Payment} />
       </Stack.Navigator>
     </NavigationContainer>
   );

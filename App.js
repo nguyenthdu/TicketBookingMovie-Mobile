@@ -5,11 +5,12 @@ import TabNavigator from "./src/navigators/TabNavigator";
 import { store } from "./src/redux/store";
 import Food from "./src/screens/Booking/BookFood";
 import BookSeat from "./src/screens/Booking/BookSeat";
+import Payment from "./src/screens/Booking/Payment";
 import ShowTime from "./src/screens/Booking/ShowTime";
 import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
 import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
-import ReviewSummary from "./src/screens/ReviewSummary";
+
 const Stack = createNativeStackNavigator();
 
 // import Logo from "./src/screens/Logo";
@@ -30,7 +31,7 @@ function App() {
           <Stack.Screen name="MoviesUpcoming" component={MoviesUpcoming} />
           <Stack.Screen name="BookSeat" component={BookSeat} />
           <Stack.Screen name="Food" component={Food} />
-          <Stack.Screen name="ReviewSummary" component={ReviewSummary} />
+          <Stack.Screen name="Payment" component={Payment} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

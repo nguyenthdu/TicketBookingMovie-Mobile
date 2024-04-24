@@ -13,6 +13,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import {
   doSetSelectedFoods,
+  doSetSelectedPromotionBill,
+  doSetSelectedPromotionFood,
+  doSetSelectedPromotionSeat,
   doSetSelectedSeats,
   doSetSelectedShowTime,
 } from "../../redux/booking/bookingSlice";
@@ -113,6 +116,9 @@ export default function ShowTime({ route, navigation }) {
   useEffect(() => {
     dispatch(doSetSelectedSeats([]));
     dispatch(doSetSelectedFoods([]));
+    dispatch(doSetSelectedPromotionBill({}));
+    dispatch(doSetSelectedPromotionSeat({}));
+    dispatch(doSetSelectedPromotionFood({}));
   }, [isFocusTime]);
 
   const handleBookSeat = () => {

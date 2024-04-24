@@ -1,23 +1,21 @@
-import React, { useState, useCallback, useRef } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
 import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Button,
-  Alert,
-  ImageBackground,
   Dimensions,
   FlatList,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import OpenYoutubeLink from "../components/OpenYoutubeLink";
-import { LinearGradient } from "expo-linear-gradient";
-import { COLORS, FONTSIZE } from "../theme/theme";
+import OpenYoutubeLink from "../../components/OpenYoutubeLink";
+import { COLORS } from "../../theme/theme";
+import { dateFormat } from "../../utils/dateFormat";
 const { width, height } = Dimensions.get("window");
 export default function MovieDetail({ route, navigation }) {
   const { movie } = route.params;
-  const castArray = movie.cast.split(",");
   return (
     //log data
     <View
@@ -253,31 +251,16 @@ export default function MovieDetail({ route, navigation }) {
           <View
             style={{ flexDirection: "row", flexWrap: "wrap", maxWidth: "70%" }}
           >
-            {movie.cast.split(",").map((actor, index) => (
-              <View
-                key={index}
-                style={{ flexDirection: "row", alignItems: "center" }}
-              >
-                {index > 0 && (
-                  <Text
-                    style={{ color: "#DFDFDE", fontSize: 16, marginLeft: 5 }}
-                  >
-                    ,
-                  </Text>
-                )}
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{
-                    color: "#DFDFDE",
-                    fontSize: 16,
-                    marginLeft: index > 0 ? 5 : 0,
-                  }}
-                >
-                  {actor.trim()}
-                </Text>
-              </View>
-            ))}
+            <Text
+              // numberOfLines={1}
+              // ellipsizeMode="tail"
+              style={{
+                color: "#DFDFDE",
+                fontSize: 16,
+              }}
+            >
+              {movie.cast}
+            </Text>
           </View>
         </View>
         <View
@@ -329,7 +312,7 @@ export default function MovieDetail({ route, navigation }) {
               marginLeft: 5,
             }}
           >
-            {movie.releaseDate}
+            {dateFormat(movie.releaseDate)}
           </Text>
         </View>
       </View>

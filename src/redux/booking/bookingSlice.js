@@ -7,7 +7,9 @@ const initialState = {
   selectedRoom: {},
   selectedSeats: [],
   selectedFoods: [],
-  selectedPromotion: {},
+  selectedPromotionBill: {},
+  selectedPromotionSeat: {},
+  selectedPromotionFood: {},
   selectedPaymentMethod: {},
 };
 
@@ -33,20 +35,25 @@ export const bookingSlice = createSlice({
     doSetSelectedFoods: (state, action) => {
       state.selectedFoods = action.payload;
     },
-    doSetSelectedPromotion: (state, action) => {
-      state.selectedPromotion = action.payload;
+    doSetSelectedPromotionBill: (state, action) => {
+      state.selectedPromotionBill = action.payload;
+    },
+    doSetSelectedPromotionSeat: (state, action) => {
+      state.selectedPromotionSeat = action.payload;
+    },
+    doSetSelectedPromotionFood: (state, action) => {
+      state.selectedPromotionFood = action.payload;
     },
     doSetSelectedPaymentMethod: (state, action) => {
       state.selectedPaymentMethod = action.payload;
     },
     doResetBooking: (state) => {
-      state.selectedCinema = {};
-      state.selectedMovie = {};
-      state.selectedShowTime = {};
       state.selectedRoom = {};
       state.selectedSeats = [];
       state.selectedFoods = [];
-      state.selectedPromotion = {};
+      state.selectedPromotionBill = {};
+      state.selectedPromotionSeat = {};
+      state.selectedPromotionFood = {};
       state.selectedPaymentMethod = {};
       //   localStorage.removeItem("bookingState");
     },
@@ -61,7 +68,9 @@ export const {
   doSetSelectedFoods,
   doSetSelectedMovie,
   doSetSelectedPaymentMethod,
-  doSetSelectedPromotion,
+  doSetSelectedPromotionBill,
+  doSetSelectedPromotionSeat,
+  doSetSelectedPromotionFood,
   doSetSelectedShowTime,
   doSetSelectedRoom,
   doResetBooking,

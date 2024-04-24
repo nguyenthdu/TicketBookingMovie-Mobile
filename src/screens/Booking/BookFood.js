@@ -93,7 +93,7 @@ const Food = ({ route, navigation }) => {
   };
 
   const handleBookSeat = () => {
-    navigation.navigate("ReviewSummary");
+    navigation.navigate("Payment");
   };
 
   const handleGoBack = () => {

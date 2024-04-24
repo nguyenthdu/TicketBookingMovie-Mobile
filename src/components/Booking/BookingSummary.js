@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { doSetSelectedPromotion } from "../../redux/booking/bookingSlice";
+import { doSetSelectedPromotionBill } from "../../redux/booking/bookingSlice";
 import { fetchPromotionByBill } from "../../services/PromotionAPI";
 import { calculatorPrice } from "../../utils/bookingUtils";
 import { formatCurrency } from "../../utils/formatData";
@@ -10,8 +10,8 @@ import styles from "./Styles";
 const BookingSummary = () => {
   const dispatch = useDispatch();
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
-  const selectedPromotion = useSelector(
-    (state) => state.booking.selectedPromotion
+  const selectedPromotionBill = useSelector(
+    (state) => state.booking.selectedPromotionBill
   );
   const selectedFoods = useSelector((state) => state.booking.selectedFoods);
 
@@ -20,8 +20,8 @@ const BookingSummary = () => {
   useEffect(() => {
     console.log("selectedSeats: ", selectedSeats);
     console.log("selectedFoods: ", selectedFoods);
-    console.log("selectedPromotion: ", selectedPromotion);
-  }, [selectedPromotion, selectedSeats, selectedFoods]);
+    console.log("selectedPromotionBill: ", selectedPromotionBill);
+  }, [selectedPromotionBill, selectedSeats, selectedFoods]);
 
   useEffect(() => {
     const total = calculatorPrice(selectedSeats, selectedFoods);
@@ -33,10 +33,11 @@ const BookingSummary = () => {
     if (totalPrice <= 0) {
       return;
     } else if (
-      selectedPromotion &&
-      selectedPromotion?.promotionDiscountDetailDto?.minBillValue > totalPrice
+      selectedPromotionBill &&
+      selectedPromotionBill?.promotionDiscountDetailDto?.minBillValue >
+        totalPrice
     ) {
-      dispatch(doSetSelectedPromotion({}));
+      dispatch(doSetSelectedPromotionBill({}));
     } else {
       getPromotionByBill(totalPrice);
     }
@@ -45,10 +46,10 @@ const BookingSummary = () => {
   const getPromotionByBill = async (price) => {
     const resPromotion = await fetchPromotionByBill(price);
     if (resPromotion) {
-      if (resPromotion.code === selectedPromotion.code) {
+      if (resPromotion.code === selectedPromotionBill.code) {
         return;
       } else {
-        dispatch(doSetSelectedPromotion(resPromotion));
+        dispatch(doSetSelectedPromotionBill(resPromotion));
       }
     }
   };

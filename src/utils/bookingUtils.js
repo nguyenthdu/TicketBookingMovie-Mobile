@@ -12,10 +12,13 @@ export const calculatorPrice = (selectedSeats, selectedFoods) => {
   return newTotalPrice;
 };
 
-export const calculatorFinalPrice = (price, selectedPromotion) => {
-  if (selectedPromotion && selectedPromotion.promotionDiscountDetailDto) {
+export const calculatorFinalPrice = (price, selectedPromotionBill) => {
+  if (
+    selectedPromotionBill &&
+    selectedPromotionBill.promotionDiscountDetailDto
+  ) {
     const { typeDiscount, discountValue, maxValue } =
-      selectedPromotion.promotionDiscountDetailDto;
+      selectedPromotionBill.promotionDiscountDetailDto;
     if (typeDiscount === "PERCENT") {
       let discountPrice = (price * discountValue) / 100;
       return discountPrice > maxValue

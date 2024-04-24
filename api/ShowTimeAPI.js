@@ -1,5 +1,5 @@
-const API_SHOWTIME_URL = "http://172.16.11.83:8080/api/showtime";
-const API_CINEMA_URL = "http://172.16.11.83:8080/api/cinema";
+const API_SHOWTIME_URL = "http://192.168.159.145:8080/api/showtime";
+const API_CINEMA_URL = "http://192.168.159.145:8080/api/cinema";
 // API lấy danh sách ngày chiếu của một phim
 export const fetchDateShowTime = async (movieId, cinemaId) => {
   try {

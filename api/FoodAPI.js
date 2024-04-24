@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://172.16.11.83:8080/api/food";
+const API_BASE_URL = "http://192.168.159.145:8080/api/food";
 
 export const getAllFood = async () => {
   try {

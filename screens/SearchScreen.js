@@ -8,7 +8,7 @@ export default function SearchScreen() {
   const fetchMovies = async () => {
     try {
       const response = await fetch(
-        "http://172.16.11.83:8080/api/movie/upcoming"
+        "http://192.168.159.145:8080/api/movie/upcoming"
       );
       const data = await response.json();
       return data.content;

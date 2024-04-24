@@ -53,14 +53,14 @@ export default function ShowTime({ route, navigation }) {
   const date_showtime = [
     "2024-04-17",
     "2024-04-21",
-    "2024-04-22",
-    "2024-04-23",
-    "2024-04-24",
-    "2024-04-25",
-    "2024-04-26",
-    "2024-04-27",
-    "2024-04-28",
-    "2024-04-29",
+    // "2024-04-22",
+    // "2024-04-23",
+    // "2024-04-24",
+    // "2024-04-25",
+    // "2024-04-26",
+    // "2024-04-27",
+    // "2024-04-28",
+    // "2024-04-29",
   ];
   const time_showtime = [
     {
@@ -353,6 +353,7 @@ export default function ShowTime({ route, navigation }) {
           marginTop: 16,
           marginHorizontal: 16,
           height: height * 0.1,
+          alignItems: "flex-start",
         }}
       >
         <FlatList

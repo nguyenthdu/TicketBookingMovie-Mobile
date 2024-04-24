@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  FlatList,
-  Image,
-  Animated,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Platform,
-  TouchableOpacity,
-} from "react-native";
-import Genres from "./Genres";
-import { LinearGradient } from "expo-linear-gradient";
-import { COLORS } from "../theme/theme";
 import { MaterialIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
+import {
+  Animated,
+  Dimensions,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { COLORS } from "../../theme/theme";
+import Genres from "../Genres";
 
 const { width, height } = Dimensions.get("window");
 const SPACING = 10;

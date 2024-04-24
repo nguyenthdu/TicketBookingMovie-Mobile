@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
+  Animated,
+  Dimensions,
   FlatList,
   Image,
-  Dimensions,
-  TouchableOpacity,
-  Animated,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { COLORS, SIZES } from "../theme/theme";
-import CustomFlatList from "../components/CustomFlatList";
-import { MaterialIcons } from "@expo/vector-icons";
+import CustomFlatList from "../../components/FlatList/CustomFlatList";
+import { COLORS } from "../../theme/theme";
 
 import {
   fetchMoviesShowing,
   fetchMoviesTrending,
   fetchMoviesUpcoming,
-} from "../api/MoiveAPI";
+} from "../../services/MoiveAPI";
 const { width, height } = Dimensions.get("window");
 
 const HomeScreen = ({ navigation }) => {
@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
         const trendingData = await fetchMoviesTrending();
         const moviesWithKeys = trendingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         const moviesWithEmptyItems = [
           { id: "empty-left" },
@@ -52,11 +52,11 @@ const HomeScreen = ({ navigation }) => {
         const showingData = await fetchMoviesShowing();
         const moviesUpcomingWithKeys = upcomingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         const moviesShowingWithKeys = showingData.map((movie, index) => ({
           ...movie,
-          id: index.toString(),
+          idIndex: index.toString(),
         }));
         setMoviesUpcoming(moviesUpcomingWithKeys);
         setMoviesShowing(moviesShowingWithKeys);

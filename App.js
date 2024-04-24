@@ -1,18 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import TabNavigator from "./navigators/TabNavigator";
-import MovieDetail from "./screens/MovieDetail";
-import ShowTime from "./screens/ShowTime";
-import MoviesShowing from "./screens/MoviesShowing";
-import MoviesUpcoming from "./screens/MoviesUpcoming";
-import BookSeat from "./screens/BookSeat";
-import Food from "./screens/Food";
-import ReviewSummary from "./screens/ReviewSummary";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import TabNavigator from "./src/navigators/TabNavigator";
+import BookSeat from "./src/screens/Booking/BookSeat";
+import ShowTime from "./src/screens/Booking/ShowTime";
+import Food from "./src/screens/Food";
+import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
+import MoviesShowing from "./src/screens/MoviesShowing";
+import MoviesUpcoming from "./src/screens/MoviesUpcoming";
+import ReviewSummary from "./src/screens/ReviewSummary";
 const Stack = createNativeStackNavigator();
 
-import Logo from "./screens/Logo";
+// import Logo from "./src/screens/Logo";
 function App() {
   return (
     <NavigationContainer>
@@ -22,7 +20,7 @@ function App() {
           component={TabNavigator}
           options={{ animation: "default" }}
         />
-        <Stack.Screen name="Logo" component={Logo} />
+        {/* <Stack.Screen name="Logo" component={Logo} /> */}
         <Stack.Screen name="MovieDetail" component={MovieDetail} />
         <Stack.Screen name="ShowTime" component={ShowTime} />
         <Stack.Screen name="MoviesShowing" component={MoviesShowing} />

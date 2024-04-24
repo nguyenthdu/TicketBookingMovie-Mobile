@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { COLORS } from "../theme/theme";
 import { MaterialIcons } from "@expo/vector-icons";
-import HomeScreen from "../screens/HomeScreen";
-import SearchScreen from "../screens/SearchScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
+import { Text, View } from "react-native";
+import HomeScreen from "../screens/HomeScreen/HomeScreen";
+import ProfileScreen from "../screens/ProfileScreen/ProfileScreen";
+import SearchScreen from "../screens/SearchScreen/SearchScreen";
+import { COLORS } from "../theme/theme";
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {

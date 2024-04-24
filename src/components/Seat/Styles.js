@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { COLORS, FONTSIZE } from "../../theme/theme";
+import { COLORS } from "../../theme/theme";
 const { width, height } = Dimensions.get("window");
 
 export default StyleSheet.create({
@@ -8,17 +8,18 @@ export default StyleSheet.create({
     backgroundColor: COLORS.White,
   },
   seat: {
-    width: width / 11 - 1,
-    height: width / 11 - 1,
-    borderWidth: 2,
-    borderColor: COLORS.Grey,
+    width: width / 23 - 1,
+    height: width / 23 - 1,
     alignItems: "center",
     justifyContent: "center",
     margin: 1,
     borderRadius: 5,
   },
   seatText: {
-    fontSize: FONTSIZE.size_14,
+    fontSize: 6,
     fontWeight: "bold",
+  },
+  rowSeat: {
+    flexDirection: "row",
   },
 });

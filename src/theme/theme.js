@@ -9,11 +9,13 @@ export const COLORS = {
   DarkGrey: "#B4B4B8",
   Yellow: "#E1CD17",
   White: "#FFFFFF",
+  Pink: "#FF1493",
   Purple: "#86469C",
   WhiteRGBA75: "rgba(255,255,255,0.75)",
   WhiteRGBA50: "rgba(255,255,255,0.50)",
   WhiteRGBA32: "rgba(255,255,255,0.32)",
   WhiteRGBA15: "rgba(255,255,255,0.15)",
+  warning: "#FFC107",
 };
 
 export const SPACING = {

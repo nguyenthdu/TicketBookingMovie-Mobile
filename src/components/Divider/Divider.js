@@ -1,13 +1,14 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { COLORS } from "../../theme/theme";
 
-const Divider = () => {
+const Divider = ({ bdWidth, bdColor, lineWidth }) => {
   return (
     <View
       style={{
-        borderBottomWidth: 1,
-        borderBottomColor: "#DDDDDD",
-        marginHorizontal: 16,
+        borderBottomWidth: bdWidth || 1,
+        borderBottomColor: bdColor || COLORS.Grey,
+        marginHorizontal: lineWidth || 16,
         marginTop: 10,
       }}
     />

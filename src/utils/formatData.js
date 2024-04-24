@@ -94,3 +94,15 @@ export const formatTime = (time) => {
   const timeObject = moment(time, "HH:mm");
   return timeObject.format("HH:mm");
 };
+
+export const dateFormat = (date) => {
+  return moment(date).format("DD-MM-YYYY");
+};
+
+export const formatCurrency = (currency) => {
+  if (!currency) return "";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(currency ?? 0);
+};

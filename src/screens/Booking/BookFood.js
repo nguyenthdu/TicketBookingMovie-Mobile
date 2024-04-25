@@ -38,7 +38,7 @@ const Food = ({ route, navigation }) => {
     const data = await getAllFood(cinemaId);
     const foodWithKeys = data.map((food, index) => ({
       ...food,
-      id: index.toString(),
+      idIndex: index.toString(),
     }));
     setFood(foodWithKeys);
   };
@@ -183,10 +183,6 @@ const Food = ({ route, navigation }) => {
                     bottom: height * 0.05,
                   }}
                 >
-                  {console.log(
-                    "so luong da chon: ",
-                    selectedFoods[item.id]?.quantity
-                  )}
                   {item.price || item.quantity === 0 ? (
                     <QuantitySelector
                       quantity={

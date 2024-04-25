@@ -7,14 +7,23 @@ import {
 } from "../../redux/booking/bookingSlice";
 import { fetchPromotionByBill } from "../../services/PromotionAPI";
 import { callFetchRoomById } from "../../services/RoomAPI";
+import { calculateTotalPrice } from "../../utils/bookingUtils";
 import { formatCurrency } from "../../utils/formatData";
 import styles from "./Styles";
 
 const BookingSummary = () => {
-  const [roomPrice, setRoomPrice] = useState(0);
+  const dispatch = useDispatch();
+  const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+  const selectedFoods = useSelector((state) => state.booking.selectedFoods);
+  const selectedPromotionBill = useSelector(
+    (state) => state.booking.selectedPromotionBill
+  );
   const selectedShowTime = useSelector(
     (state) => state.booking.selectedShowTime
   );
+
+  const [roomPrice, setRoomPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   // lấy giá phòng
   useEffect(() => {
@@ -25,78 +34,25 @@ const BookingSummary = () => {
 
   const fetchRoomById = async (id) => {
     const res = await callFetchRoomById(id);
+    console.log("res price: ", res);
     if (res) {
       setRoomPrice(res.price);
       dispatch(doSetSelectedRoom(res));
     }
   };
 
-  const dispatch = useDispatch();
-  const selectedSeats = useSelector((state) => state.booking.selectedSeats);
-  const selectedPromotionBill = useSelector(
-    (state) => state.booking.selectedPromotionBill
-  );
-  const selectedFoods = useSelector((state) => state.booking.selectedFoods);
-
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  useEffect(() => {
-    console.log("selectedPromotionBill redux: ", selectedPromotionBill);
-  }, [selectedPromotionBill]);
-
   useEffect(() => {
     if (selectedSeats || selectedFoods || selectedPromotionBill) {
-      calculateTotalPrice();
+      calculateTotalPrice(
+        selectedSeats,
+        selectedFoods,
+        roomPrice,
+        selectedPromotionBill,
+        dispatch,
+        setTotalPrice
+      );
     }
   }, [selectedSeats, selectedFoods, selectedPromotionBill]);
-
-  const calculateTotalPrice = () => {
-    let newTotalPrice = 0;
-
-    // Tính tổng tiền cho các ghế ngồi
-    selectedSeats.forEach((seat) => {
-      const seatPrice = seat.price;
-      newTotalPrice += seatPrice + roomPrice;
-    });
-
-    // Tính tổng tiền cho các món đồ ăn
-    selectedFoods.forEach((food) => {
-      newTotalPrice += food.price * food.quantity;
-    });
-
-    // Áp dụng khuyến mãi nếu có
-    if (selectedPromotionBill !== null) {
-      if (
-        selectedPromotionBill.typePromotion === "DISCOUNT" &&
-        selectedPromotionBill.promotionDiscountDetailDto.typeDiscount ===
-          "PERCENT"
-      ) {
-        const minBillValue =
-          selectedPromotionBill.promotionDiscountDetailDto.minBillValue;
-        // Kiểm tra nếu tổng giá trị hóa đơn đạt tối thiểu thì mới áp dụng khuyến mãi
-        if (newTotalPrice >= minBillValue) {
-          const discountValue =
-            selectedPromotionBill.promotionDiscountDetailDto.discountValue;
-          const maxValue =
-            selectedPromotionBill.promotionDiscountDetailDto.maxValue;
-          const discountedPrice = newTotalPrice * (1 - discountValue / 100);
-
-          // Kiểm tra nếu giá giảm đã bằng hoặc vượt quá maxValue thì giữ nguyên giá trị tổng giá
-          const finalPrice =
-            discountedPrice <= maxValue
-              ? discountedPrice
-              : newTotalPrice - maxValue;
-
-          newTotalPrice = finalPrice;
-        } else {
-          dispatch(doSetSelectedPromotionBill({}));
-        }
-      }
-    }
-
-    // Cập nhật tổng giá mới
-    setTotalPrice(newTotalPrice);
-  };
 
   // fetch promotion by bill
   useEffect(() => {

@@ -1,76 +1,83 @@
-export const calculatorPrice = (selectedSeats, selectedFoods) => {
+import { doSetSelectedPromotionBill } from "../redux/booking/bookingSlice";
+
+export const calculateTotalPrice = (
+  seats,
+  foods,
+  roomPrice,
+  promotionBill,
+  dispatch,
+  setTotalPrice
+) => {
   let newTotalPrice = 0;
-  selectedSeats.forEach((seat) => {
-    newTotalPrice += seat.price;
+  // seats foods roomPrice dispatch
+  // Tính tổng tiền cho các ghế ngồi
+  seats.forEach((seat) => {
+    const seatPrice = seat.price;
+    newTotalPrice += seatPrice + roomPrice;
   });
 
-  selectedFoods.forEach((food) => {
-    console.log("food: ", food.price);
+  // Tính tổng tiền cho các món đồ ăn
+  foods.forEach((food) => {
     newTotalPrice += food.price * food.quantity;
   });
 
-  return newTotalPrice;
+  // Áp dụng khuyến mãi nếu có
+  applyPromotion(newTotalPrice, promotionBill, dispatch, setTotalPrice);
 };
 
-export const calculatorFinalPrice = (price, selectedPromotionBill) => {
-  if (
-    selectedPromotionBill &&
-    selectedPromotionBill.promotionDiscountDetailDto
-  ) {
-    const { typeDiscount, discountValue, maxValue } =
-      selectedPromotionBill.promotionDiscountDetailDto;
-    if (typeDiscount === "PERCENT") {
-      let discountPrice = (price * discountValue) / 100;
-      return discountPrice > maxValue
-        ? price - maxValue
-        : price - discountPrice;
-    } else {
-      return price - discountValue;
+const applyPromotion = (totalPrice, promotionBill, dispatch, setTotalPrice) => {
+  if (promotionBill !== null) {
+    switch (promotionBill.typePromotion) {
+      case "DISCOUNT":
+        applyDiscount(totalPrice, promotionBill, dispatch, setTotalPrice);
+        break;
+      case "FOOD":
+        applyFood();
+        break;
+      case "TICKET":
+        applyTicket();
+        break;
+      default:
+        // Không áp dụng khuyến mãi nếu không phù hợp với bất kỳ loại nào
+        setTotalPrice(totalPrice);
+        break;
     }
-  }
-  return price; // Trả về giá gốc nếu không có promotion
-};
-
-export const calculatePriceAfterPromotion = (
-  totalPrice,
-  selectedPromotionBill
-) => {
-  console.log(
-    "selectedPromotionBill trong calculator: ",
-    selectedPromotionBill
-  );
-  if (
-    !selectedPromotionBill ||
-    totalPrice < selectedPromotionBill.promotionDiscountDetailDto.minBillValue
-  ) {
-    // Nếu không có khuyến mãi hoặc tổng số tiền nhỏ hơn mức tối thiểu của khuyến mãi
-    return totalPrice;
   } else {
-    // Tính toán số tiền được giảm dựa trên loại khuyến mãi
-    let discountAmount = 0;
-    if (
-      selectedPromotionBill.promotionDiscountDetailDto.typeDiscount ===
-      "PERCENT"
-    ) {
-      // Nếu khuyến mãi giảm theo phần trăm
-      discountAmount =
-        totalPrice *
-        (selectedPromotionBill.promotionDiscountDetailDto.discountValue / 100);
-      if (
-        discountAmount >
-        selectedPromotionBill.promotionDiscountDetailDto.maxValue
-      ) {
-        // Nếu số tiền giảm vượt quá giá trị tối đa được giảm
-        discountAmount =
-          selectedPromotionBill.promotionDiscountDetailDto.maxValue;
-      }
-    } else {
-      // Nếu khuyến mãi giảm theo số tiền cố định
-      discountAmount =
-        selectedPromotionBill.promotionDiscountDetailDto.discountValue;
-    }
-    // Tính tổng số tiền sau khi áp dụng khuyến mãi
-    const totalPriceAfterPromotion = totalPrice - discountAmount;
-    return totalPriceAfterPromotion > 0 ? totalPriceAfterPromotion : 0;
+    // Không có khuyến mãi
+    setTotalPrice(totalPrice);
   }
 };
+
+const applyDiscount = (totalPrice, promotionBill, dispatch, setTotalPrice) => {
+  if (promotionBill.promotionDiscountDetailDto.typeDiscount === "PERCENT") {
+    const minBillValue = promotionBill.promotionDiscountDetailDto.minBillValue;
+    if (totalPrice >= minBillValue) {
+      const discountValue =
+        promotionBill.promotionDiscountDetailDto.discountValue;
+      const maxValue = promotionBill.promotionDiscountDetailDto.maxValue;
+      const discountedPrice = totalPrice * (1 - discountValue / 100);
+
+      // Kiểm tra nếu giá giảm đã bằng hoặc vượt quá maxValue thì giữ nguyên giá trị tổng giá
+      const finalPrice =
+        discountedPrice <= maxValue ? discountedPrice : totalPrice - maxValue;
+
+      setTotalPrice(finalPrice);
+    } else {
+      dispatch(doSetSelectedPromotionBill({}));
+      setTotalPrice(totalPrice);
+    }
+  }
+  // if (
+  //   promotionBill.promotionDiscountDetailDto.typeDiscount === "AMOUNT"
+  // )
+  else {
+    const discountValue =
+      promotionBill.promotionDiscountDetailDto.discountValue;
+    const finalPrice = totalPrice - discountValue;
+    setTotalPrice(finalPrice);
+  }
+};
+
+const applyFood = () => {};
+
+const applyTicket = () => {};

@@ -12,6 +12,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import {
+  doSetSelectedCinema,
   doSetSelectedFoods,
   doSetSelectedPromotionBill,
   doSetSelectedPromotionFood,
@@ -120,6 +121,12 @@ export default function ShowTime({ route, navigation }) {
     dispatch(doSetSelectedPromotionSeat({}));
     dispatch(doSetSelectedPromotionFood({}));
   }, [isFocusTime]);
+
+  useEffect(() => {
+    if (cinema) {
+      dispatch(doSetSelectedCinema(cinema));
+    }
+  }, [cinema]);
 
   const handleBookSeat = () => {
     if (Object.keys(isFocusTime).length === 0) {

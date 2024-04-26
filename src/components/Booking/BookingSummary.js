@@ -73,7 +73,8 @@ const BookingSummary = () => {
         selectedFoods,
         selectedRoom.price,
         selectedPromotionBill,
-        selectedPromotionSeat
+        selectedPromotionSeat,
+        selectedPromotionFood
       );
     }
   }, [
@@ -81,6 +82,7 @@ const BookingSummary = () => {
     selectedFoods,
     selectedPromotionBill,
     selectedPromotionSeat,
+    selectedPromotionFood,
   ]);
 
   // fetch promotion by bill

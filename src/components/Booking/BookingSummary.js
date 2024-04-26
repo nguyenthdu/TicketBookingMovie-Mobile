@@ -3,13 +3,11 @@ import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   doSetSelectedPromotionBill,
-  doSetSelectedPromotionFood,
   doSetSelectedPromotionSeat,
   doSetSelectedRoom,
 } from "../../redux/booking/bookingSlice";
 import {
   fetchPromotionByBill,
-  fetchPromotionByFood,
   fetchPromotionByTicket,
 } from "../../services/PromotionAPI";
 import { callFetchRoomById } from "../../services/RoomAPI";
@@ -128,25 +126,31 @@ const BookingSummary = () => {
     }
   };
 
-  // fetch promotion by food
-  useEffect(() => {
-    if (selectedFoods.length > 0 && selectedCinema) {
-      getPromotionByFood(selectedFoods, selectedCinema);
-    } else {
-      dispatch(doSetSelectedPromotionFood({}));
-    }
-  }, [selectedFoods]);
+  // // fetch promotion by food
+  // useEffect(() => {
+  //   if (selectedFoods.length > 0 && selectedCinema) {
+  //     getPromotionByFood(selectedFoods, selectedCinema);
+  //   } else {
+  //     dispatch(doSetSelectedPromotionFood({}));
+  //   }
+  // }, [selectedFoods]);
 
-  const getPromotionByFood = async (foods, cinemaId) => {
-    const resPromotion = await fetchPromotionByFood(foods, cinemaId);
-    if (resPromotion) {
-      if (resPromotion?.id !== selectedPromotionFood?.id) {
-        dispatch(doSetSelectedPromotionFood(resPromotion));
-        setPromotion(resPromotion); // Lưu promotion vào state
-        setModalVisible(true); // Hiển thị NotificationPromotion
-      }
-    }
-  };
+  // const getPromotionByFood = async (foods, cinemaId) => {
+  //   const resPromotion = await fetchPromotionByFood(foods, cinemaId);
+  //   console.log("resPromotion: ", resPromotion?.id);
+  //   if (resPromotion) {
+  //     if (resPromotion?.id !== selectedPromotionFood?.id) {
+  //       console.log(
+  //         "so sanh food: ",
+  //         resPromotion.id,
+  //         selectedPromotionFood.id
+  //       );
+  //       dispatch(doSetSelectedPromotionFood(resPromotion));
+  //       setPromotion(resPromotion); // Lưu promotion vào state
+  //       setModalVisible(true); // Hiển thị NotificationPromotion
+  //     }
+  //   }
+  // };
 
   return (
     <>

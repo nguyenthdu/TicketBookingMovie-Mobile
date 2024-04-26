@@ -12,8 +12,13 @@ import { Divider } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import QuantitySelector from "../../components/Booking/QuantitySelector";
-import { doSetSelectedFoods } from "../../redux/booking/bookingSlice";
+import NotificationPromotion from "../../components/Notification/NotificationPromotion";
+import {
+  doSetSelectedFoods,
+  doSetSelectedPromotionFood,
+} from "../../redux/booking/bookingSlice";
 import { getAllFood } from "../../services/FoodAPI";
+import { fetchPromotionByFood } from "../../services/PromotionAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { formatCurrency } from "../../utils/formatData";
 import styles from "./Styles";
@@ -24,9 +29,34 @@ const Food = ({ route, navigation }) => {
   const { cinemaId } = route.params;
   const dispatch = useDispatch();
   const selectedFoods = useSelector((state) => state.booking.selectedFoods);
+  const selectedPromotionFood = useSelector(
+    (state) => state.booking.selectedPromotionFood
+  );
 
   const [food, setFood] = useState([]);
-  const [selectedQuantities, setSelectedQuantities] = useState({});
+  const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
+  const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
+
+  // fetch promotion by food
+  useEffect(() => {
+    if (selectedFoods.length > 0 && cinemaId) {
+      getPromotionByFood(selectedFoods, cinemaId);
+    } else {
+      dispatch(doSetSelectedPromotionFood({}));
+    }
+  }, [selectedFoods]);
+
+  const getPromotionByFood = async (foods, cinemaId) => {
+    const resPromotion = await fetchPromotionByFood(foods, cinemaId);
+    console.log("resPromotion: ", resPromotion?.id);
+    if (resPromotion) {
+      if (resPromotion?.id !== selectedPromotionFood?.id) {
+        dispatch(doSetSelectedPromotionFood(resPromotion));
+        setPromotion(resPromotion); // Lưu promotion vào state
+        setModalVisible(true); // Hiển thị NotificationPromotion
+      }
+    }
+  };
 
   useEffect(() => {
     if (cinemaId) {
@@ -60,10 +90,6 @@ const Food = ({ route, navigation }) => {
     }
 
     dispatch(doSetSelectedFoods(newSelectedFoods));
-    setSelectedQuantities((prevState) => ({
-      ...prevState,
-      [item.id]: (prevState[item.id] || 0) + 1,
-    }));
   };
 
   const decreaseQuantity = (item) => {
@@ -85,11 +111,6 @@ const Food = ({ route, navigation }) => {
       }
       dispatch(doSetSelectedFoods(newSelectedFoods));
     }
-
-    setSelectedQuantities((prevState) => ({
-      ...prevState,
-      [item.id]: Math.max((prevState[item.id] || 0) - 1, 0),
-    }));
   };
 
   const handleBookSeat = () => {
@@ -212,6 +233,11 @@ const Food = ({ route, navigation }) => {
         >
           <Text style={styles.textBtnContinue}>Tiếp tục</Text>
         </TouchableOpacity>
+        <NotificationPromotion
+          promotion={promotion}
+          modalVisible={modalVisible}
+          handleClose={() => setModalVisible(false)}
+        />
       </View>
     </View>
   );

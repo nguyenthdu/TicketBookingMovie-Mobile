@@ -10,11 +10,7 @@ import imagePromotionDefault from "../../assets/images/promotion.png";
 import { formatCurrency } from "../../utils/formatData";
 import styles from "./Styles";
 
-const showNotificationPromotion = ({
-  promotion,
-  modalVisible,
-  handleClose,
-}) => {
+const NotificationPromotion = ({ promotion, modalVisible, handleClose }) => {
   const message =
     promotion?.typePromotion === "TICKET"
       ? `Chúc mừng bạn đã nhận được ưu đãi ${promotion?.promotionTicketDetailDto.quantityPromotion} vé miễn phí khi mua ${promotion?.promotionTicketDetailDto.quantityRequired} vé.`
@@ -82,4 +78,4 @@ const showNotificationPromotion = ({
   );
 };
 
-export default showNotificationPromotion;
+export default NotificationPromotion;

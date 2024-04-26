@@ -107,27 +107,27 @@ export default BookingUtils = () => {
         ).length;
 
         // Nếu số lượng ghế đạt yêu cầu
-        if (selectedRequired > quantityRequired) {
+        if (selectedRequired >= quantityRequired) {
           // Kiểm tra xem có ghế phù hợp với loại ghế khuyến mãi không
           const promotionSeats = seats.filter(
             (seat) => seat.seatTypeId === typeSeatPromotion
           );
 
-          console.log("promotionSeats: ", promotionSeats);
+          // Kiểm tra nếu có đủ ghế khuyến mãi
+          if (promotionSeats.length > quantityRequired) {
+            const promotionSeatPrice =
+              promotionSeat.promotionTicketDetailDto.price > 0
+                ? promotionSeat.promotionTicketDetailDto.price
+                : promotionSeats[0].price;
 
-          // Nếu có ghế phù hợp với loại ghế khuyến mãi
-          if (
-            promotionSeats.length > 0 &&
-            promotionSeat.promotionTicketDetailDto.price > 0
-          ) {
-            // Tính toán giảm giá bằng số lượng ghế khuyến mãi nhân với giá của mỗi ghế
             const discountAmount =
-              quantityPromotion * promotionSeat.promotionTicketDetailDto.price;
+              Math.min(
+                quantityPromotion,
+                promotionSeats.length - quantityRequired
+              ) * promotionSeatPrice;
 
             // Trừ giảm giá từ tổng giá
             totalPrice -= discountAmount;
-          } else {
-            totalPrice -= quantityPromotion * promotionSeats[0].price;
           }
         }
       }

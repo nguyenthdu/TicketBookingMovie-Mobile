@@ -5,6 +5,7 @@ import {
   doSetSelectedPromotionBill,
   doSetSelectedPromotionSeat,
   doSetSelectedRoom,
+  doSetTotalPrice,
 } from "../../redux/booking/bookingSlice";
 import {
   fetchPromotionByBill,
@@ -34,13 +35,13 @@ const BookingSummary = () => {
   const selectedShowTime = useSelector(
     (state) => state.booking.selectedShowTime
   );
-  const selectedCinema = useSelector((state) => state.booking.selectedCinema);
   const selectedRoom = useSelector((state) => state.booking.selectedRoom);
   const totalPrice = useSelector((state) => state.booking.totalPrice);
 
   useEffect(() => {
-    console.log("totalPrice: ", totalPrice);
-  }, [totalPrice]);
+    console.log("render mấy lần: ");
+    console.log("totalPrice mấy lần: ", totalPrice);
+  }, []);
 
   const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
   const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
@@ -67,8 +68,8 @@ const BookingSummary = () => {
   };
 
   useEffect(() => {
-    if (selectedSeats || selectedFoods) {
-      CalculateTotalPrice(
+    if (selectedSeats.length > 0 || selectedFoods.length > 0) {
+      const price = CalculateTotalPrice(
         selectedSeats,
         selectedFoods,
         selectedRoom.price,
@@ -76,6 +77,7 @@ const BookingSummary = () => {
         selectedPromotionSeat,
         selectedPromotionFood
       );
+      dispatch(doSetTotalPrice(price));
     }
   }, [
     selectedSeats,
@@ -96,11 +98,12 @@ const BookingSummary = () => {
 
   const getPromotionByBill = async (price) => {
     try {
+      console.log("price khi gọi promotion bill: ", price);
       const resPromotion = await fetchPromotionByBill(price);
       if (resPromotion) {
         if (resPromotion?.id !== selectedPromotionBill?.id) {
           console.log(
-            "resPromotion: ",
+            "resPromotion bill: ",
             resPromotion.id,
             selectedPromotionBill.id
           );

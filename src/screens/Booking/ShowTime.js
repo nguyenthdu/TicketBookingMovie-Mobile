@@ -19,6 +19,7 @@ import {
   doSetSelectedPromotionSeat,
   doSetSelectedSeats,
   doSetSelectedShowTime,
+  doSetTotalPrice,
 } from "../../redux/booking/bookingSlice";
 import { fetchAllCinemas } from "../../services/CinemaAPI";
 import { fetchDateShowTime, fetchShowTime } from "../../services/ShowTimeAPI";
@@ -120,6 +121,7 @@ export default function ShowTime({ route, navigation }) {
     dispatch(doSetSelectedPromotionBill({}));
     dispatch(doSetSelectedPromotionSeat({}));
     dispatch(doSetSelectedPromotionFood({}));
+    dispatch(doSetTotalPrice({}));
   }, [isFocusTime]);
 
   useEffect(() => {

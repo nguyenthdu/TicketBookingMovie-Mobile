@@ -1,8 +1,5 @@
 import { useDispatch } from "react-redux";
-import {
-  doSetSelectedPromotionBill,
-  doSetTotalPrice,
-} from "../redux/booking/bookingSlice";
+import { doSetSelectedPromotionBill } from "../redux/booking/bookingSlice";
 
 export default BookingUtils = () => {
   const dispatch = useDispatch();
@@ -38,7 +35,8 @@ export default BookingUtils = () => {
       foods,
       promotionFood
     );
-    dispatch(doSetTotalPrice(finallyPrice));
+
+    return finallyPrice;
   };
 
   const ApplyPromotion = (

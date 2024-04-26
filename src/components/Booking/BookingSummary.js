@@ -37,13 +37,13 @@ const BookingSummary = () => {
     (state) => state.booking.selectedShowTime
   );
   const selectedCinema = useSelector((state) => state.booking.selectedCinema);
+  const selectedRoom = useSelector((state) => state.booking.selectedRoom);
+  const totalPrice = useSelector((state) => state.booking.totalPrice);
 
   useEffect(() => {
     console.log("selectedPromotionBill: ", selectedPromotionBill);
   }, [selectedPromotionBill]);
 
-  const [roomPrice, setRoomPrice] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
   const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
 
@@ -64,7 +64,6 @@ const BookingSummary = () => {
   const fetchRoomById = async (id) => {
     const res = await callFetchRoomById(id);
     if (res) {
-      setRoomPrice(res.price);
       dispatch(doSetSelectedRoom(res));
     }
   };
@@ -74,9 +73,8 @@ const BookingSummary = () => {
       CalculateTotalPrice(
         selectedSeats,
         selectedFoods,
-        roomPrice,
-        selectedPromotionBill,
-        setTotalPrice
+        selectedRoom.price,
+        selectedPromotionBill
       );
     }
   }, [selectedSeats, selectedFoods, selectedPromotionBill]);

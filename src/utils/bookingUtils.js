@@ -1,16 +1,13 @@
 import { useDispatch } from "react-redux";
-import { doSetSelectedPromotionBill } from "../redux/booking/bookingSlice";
+import {
+  doSetSelectedPromotionBill,
+  doSetTotalPrice,
+} from "../redux/booking/bookingSlice";
 
 export default BookingUtils = () => {
   const dispatch = useDispatch();
 
-  const CalculateTotalPrice = (
-    seats,
-    foods,
-    roomPrice,
-    promotionBill,
-    setTotalPrice
-  ) => {
+  const CalculateTotalPrice = (seats, foods, roomPrice, promotionBill) => {
     let newTotalPrice = 0;
     // Tính tổng tiền cho các ghế ngồi
     seats.forEach((seat) => {
@@ -24,14 +21,14 @@ export default BookingUtils = () => {
     });
 
     // Áp dụng khuyến mãi nếu có
-    ApplyPromotion(newTotalPrice, promotionBill, setTotalPrice);
+    ApplyPromotion(newTotalPrice, promotionBill);
   };
 
-  const ApplyPromotion = (totalPrice, promotionBill, setTotalPrice) => {
+  const ApplyPromotion = (totalPrice, promotionBill) => {
     if (promotionBill !== null) {
       switch (promotionBill.typePromotion) {
         case "DISCOUNT":
-          ApplyDiscount(totalPrice, promotionBill, setTotalPrice);
+          ApplyDiscount(totalPrice, promotionBill);
           break;
         case "FOOD":
           applyFood();
@@ -41,16 +38,16 @@ export default BookingUtils = () => {
           break;
         default:
           // Không áp dụng khuyến mãi nếu không phù hợp với bất kỳ loại nào
-          setTotalPrice(totalPrice);
+          dispatch(doSetTotalPrice(totalPrice));
           break;
       }
     } else {
       // Không có khuyến mãi
-      setTotalPrice(totalPrice);
+      dispatch(doSetTotalPrice(totalPrice));
     }
   };
 
-  const ApplyDiscount = (totalPrice, promotionBill, setTotalPrice) => {
+  const ApplyDiscount = (totalPrice, promotionBill) => {
     if (promotionBill.promotionDiscountDetailDto.typeDiscount === "PERCENT") {
       const minBillValue =
         promotionBill.promotionDiscountDetailDto.minBillValue;
@@ -64,10 +61,10 @@ export default BookingUtils = () => {
         const finalPrice =
           discountedPrice <= maxValue ? discountedPrice : totalPrice - maxValue;
 
-        setTotalPrice(finalPrice);
+        dispatch(doSetTotalPrice(finalPrice));
       } else {
         dispatch(doSetSelectedPromotionBill({}));
-        setTotalPrice(totalPrice);
+        dispatch(doSetTotalPrice(totalPrice));
       }
     }
     // if (
@@ -77,7 +74,7 @@ export default BookingUtils = () => {
       const discountValue =
         promotionBill.promotionDiscountDetailDto.discountValue;
       const finalPrice = totalPrice - discountValue;
-      setTotalPrice(finalPrice);
+      dispatch(doSetTotalPrice(finalPrice));
     }
   };
 

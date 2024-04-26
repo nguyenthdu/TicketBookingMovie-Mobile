@@ -7,7 +7,13 @@ import {
 export default BookingUtils = () => {
   const dispatch = useDispatch();
 
-  const CalculateTotalPrice = (seats, foods, roomPrice, promotionBill) => {
+  const CalculateTotalPrice = (
+    seats,
+    foods,
+    roomPrice,
+    promotionBill,
+    promotionSeat
+  ) => {
     let newTotalPrice = 0;
     // Tính tổng tiền cho các ghế ngồi
     seats.forEach((seat) => {
@@ -21,20 +27,24 @@ export default BookingUtils = () => {
     });
 
     // Áp dụng khuyến mãi nếu có
-    ApplyPromotion(newTotalPrice, promotionBill);
+    ApplyPromotionBill(newTotalPrice, promotionBill);
+    ApplyPromotionSeat(seats, newTotalPrice, promotionSeat);
   };
 
-  const ApplyPromotion = (totalPrice, promotionBill) => {
+  const ApplyPromotionSeat = (seats, totalPrice, promotionSeat) => {
+    if (promotionSeat !== null) {
+      ApplyTicket(seats, totalPrice, promotionSeat);
+    } else {
+      // Không có khuyến mãi
+      dispatch(doSetTotalPrice(totalPrice));
+    }
+  };
+
+  const ApplyPromotionBill = (totalPrice, promotionBill) => {
     if (promotionBill !== null) {
       switch (promotionBill.typePromotion) {
         case "DISCOUNT":
           ApplyDiscount(totalPrice, promotionBill);
-          break;
-        case "FOOD":
-          applyFood();
-          break;
-        case "TICKET":
-          applyTicket();
           break;
         default:
           // Không áp dụng khuyến mãi nếu không phù hợp với bất kỳ loại nào
@@ -78,9 +88,55 @@ export default BookingUtils = () => {
     }
   };
 
+  const ApplyTicket = (seats, totalPrice, promotionSeat) => {
+    console.log("promotionSeat: ", promotionSeat);
+    // Kiểm tra nếu có thông tin về chi tiết khuyến mãi vé
+    if (promotionSeat?.promotionTicketDetailDto) {
+      const {
+        typeSeatRequired,
+        quantityRequired,
+        typeSeatPromotion,
+        quantityPromotion,
+      } = promotionSeat?.promotionTicketDetailDto;
+
+      // Kiểm tra các điều kiện của khuyến mãi vé
+      if (typeSeatRequired && quantityRequired && typeSeatPromotion) {
+        // Đếm số lượng ghế phù hợp với loại ghế yêu cầu
+        const selectedRequired = seats.filter(
+          (seat) => seat.seatTypeId === typeSeatRequired
+        ).length;
+
+        // Nếu số lượng ghế đạt yêu cầu
+        if (selectedRequired > quantityRequired) {
+          // Kiểm tra xem có ghế phù hợp với loại ghế khuyến mãi không
+          const promotionSeats = seats.filter(
+            (seat) => seat.seatTypeId === typeSeatPromotion
+          );
+
+          console.log("promotionSeats: ", promotionSeats);
+
+          // Nếu có ghế phù hợp với loại ghế khuyến mãi
+          if (
+            promotionSeats.length > 0 &&
+            promotionSeat.promotionTicketDetailDto.price > 0
+          ) {
+            // Tính toán giảm giá bằng số lượng ghế khuyến mãi nhân với giá của mỗi ghế
+            const discountAmount =
+              quantityPromotion * promotionSeat.promotionTicketDetailDto.price;
+
+            // Trừ giảm giá từ tổng giá
+            totalPrice -= discountAmount;
+          } else {
+            totalPrice -= quantityPromotion * promotionSeats[0].price;
+          }
+        }
+      }
+    }
+
+    dispatch(doSetTotalPrice(totalPrice));
+  };
+
   return { CalculateTotalPrice };
 
   const ApplyFood = () => {};
-
-  const ApplyTicket = () => {};
 };

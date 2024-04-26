@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
   doSetSelectedPromotionBill,
@@ -13,11 +13,14 @@ import {
   fetchPromotionByTicket,
 } from "../../services/PromotionAPI";
 import { callFetchRoomById } from "../../services/RoomAPI";
-import { calculateTotalPrice } from "../../utils/bookingUtils";
+import BookingUtils from "../../utils/bookingUtils";
 import { formatCurrency } from "../../utils/formatData";
+import NotificationPromotion from "../Notification/NotificationPromotion";
 import styles from "./Styles";
 
 const BookingSummary = () => {
+  const { CalculateTotalPrice } = BookingUtils();
+
   const dispatch = useDispatch();
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
   const selectedFoods = useSelector((state) => state.booking.selectedFoods);
@@ -35,8 +38,21 @@ const BookingSummary = () => {
   );
   const selectedCinema = useSelector((state) => state.booking.selectedCinema);
 
+  useEffect(() => {
+    console.log("selectedPromotionBill: ", selectedPromotionBill);
+  }, [selectedPromotionBill]);
+
   const [roomPrice, setRoomPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
+  const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
+
+  // Reset state when leaving BookingSummary screen
+
+  const handleClose = () => {
+    setPromotion(null);
+    setModalVisible(false);
+  };
 
   // lấy giá phòng
   useEffect(() => {
@@ -55,12 +71,11 @@ const BookingSummary = () => {
 
   useEffect(() => {
     if (selectedSeats || selectedFoods || selectedPromotionBill) {
-      calculateTotalPrice(
+      CalculateTotalPrice(
         selectedSeats,
         selectedFoods,
         roomPrice,
         selectedPromotionBill,
-        dispatch,
         setTotalPrice
       );
     }
@@ -76,24 +91,22 @@ const BookingSummary = () => {
   }, [totalPrice]);
 
   const getPromotionByBill = async (price) => {
-    const resPromotion = await fetchPromotionByBill(price);
-    if (resPromotion) {
-      if (resPromotion.id !== selectedPromotionBill?.id) {
-        Alert.alert(
-          "Thông báo",
-          `Bạn nhận được khuyến mãi ${resPromotion.name} với giá trị ${
-            resPromotion.promotionDiscountDetailDto.discountValue
-          }${
-            resPromotion.promotionDiscountDetailDto.typeDiscount === "PERCENT"
-              ? "%"
-              : "đ"
-          } giảm tối đa ${formatCurrency(
-            resPromotion.promotionDiscountDetailDto.maxValue
-          )}`
-        );
-        console.log("so sanh: ", resPromotion.id, selectedPromotionBill.id);
-        dispatch(doSetSelectedPromotionBill(resPromotion));
+    try {
+      const resPromotion = await fetchPromotionByBill(price);
+      if (resPromotion) {
+        if (resPromotion?.id !== selectedPromotionBill?.id) {
+          console.log(
+            "resPromotion: ",
+            resPromotion.id,
+            selectedPromotionBill.id
+          );
+          dispatch(doSetSelectedPromotionBill(resPromotion));
+          setPromotion(resPromotion); // Lưu promotion vào state
+          setModalVisible(true); // Hiển thị NotificationPromotion
+        }
       }
+    } catch (error) {
+      console.log("Error getPromotionByBill: ", error);
     }
   };
 
@@ -108,14 +121,11 @@ const BookingSummary = () => {
 
   const getPromotionByTicket = async (seats, showTimeId) => {
     const resPromotion = await fetchPromotionByTicket(seats, showTimeId);
-    console.log("res promotion seat: ", resPromotion);
     if (resPromotion) {
-      if (resPromotion.id !== selectedPromotionSeat?.id) {
-        Alert.alert(
-          "Thông báo",
-          `Bạn nhận được khuyến mãi ${resPromotion.name}`
-        );
+      if (resPromotion?.id !== selectedPromotionSeat?.id) {
         dispatch(doSetSelectedPromotionSeat(resPromotion));
+        setPromotion(resPromotion); // Lưu promotion vào state
+        setModalVisible(true); // Hiển thị NotificationPromotion
       }
     }
   };
@@ -132,82 +142,87 @@ const BookingSummary = () => {
   const getPromotionByFood = async (foods, cinemaId) => {
     const resPromotion = await fetchPromotionByFood(foods, cinemaId);
     if (resPromotion) {
-      if (resPromotion.id !== selectedPromotionFood?.id) {
-        Alert.alert(
-          "Thông báo",
-          `Bạn nhận được khuyến mãi ${resPromotion.name}`
-        );
+      if (resPromotion?.id !== selectedPromotionFood?.id) {
         dispatch(doSetSelectedPromotionFood(resPromotion));
+        setPromotion(resPromotion); // Lưu promotion vào state
+        setModalVisible(true); // Hiển thị NotificationPromotion
       }
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ flexDirection: "column" }}>
-        <View style={styles.seatSelected}>
-          {selectedSeats.length > 0 && (
-            <>
-              <Text style={styles.textStyle}>
-                {selectedSeats.length}x ghế:{" "}
-              </Text>
-              <View style={styles.rightContainer}>
-                {selectedSeats.length > 0 &&
-                  selectedSeats.map((seat, index) => (
-                    <Text
-                      key={index}
-                      style={[
-                        styles.textStyle,
-                        styles.gapStyle,
-                        { fontWeight: "normal" },
-                      ]}
-                    >
-                      {seat.name},
-                    </Text>
-                  ))}
-              </View>
-            </>
-          )}
-        </View>
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          {selectedFoods.length > 0 && (
-            <>
-              <Text style={styles.textStyle}>Đồ ăn: </Text>
-              <View style={styles.rightContainer}>
-                {selectedFoods.length > 0 &&
-                  selectedFoods.map((food, index) => (
-                    <Text
-                      key={index}
-                      style={[
-                        styles.textStyle,
-                        styles.gapStyle,
-                        { fontWeight: "normal" },
-                      ]}
-                    >
-                      <Text style={{ fontWeight: "bold" }}>
-                        {food.quantity}x{" "}
+    <>
+      <View style={styles.container}>
+        <View style={{ flexDirection: "column" }}>
+          <View style={styles.seatSelected}>
+            {selectedSeats.length > 0 && (
+              <>
+                <Text style={styles.textStyle}>
+                  {selectedSeats.length}x ghế:{" "}
+                </Text>
+                <View style={styles.rightContainer}>
+                  {selectedSeats.length > 0 &&
+                    selectedSeats.map((seat, index) => (
+                      <Text
+                        key={index}
+                        style={[
+                          styles.textStyle,
+                          styles.gapStyle,
+                          { fontWeight: "normal" },
+                        ]}
+                      >
+                        {seat.name},
                       </Text>
-                      {food.name},
-                    </Text>
-                  ))}
+                    ))}
+                </View>
+              </>
+            )}
+          </View>
+          <View style={{ display: "flex", flexDirection: "row" }}>
+            {selectedFoods.length > 0 && (
+              <>
+                <Text style={styles.textStyle}>Đồ ăn: </Text>
+                <View style={styles.rightContainer}>
+                  {selectedFoods.length > 0 &&
+                    selectedFoods.map((food, index) => (
+                      <Text
+                        key={index}
+                        style={[
+                          styles.textStyle,
+                          styles.gapStyle,
+                          { fontWeight: "normal" },
+                        ]}
+                      >
+                        <Text style={{ fontWeight: "bold" }}>
+                          {food.quantity}x{" "}
+                        </Text>
+                        {food.name},
+                      </Text>
+                    ))}
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+        <View style={styles.calculateTotal}>
+          {totalPrice > 0 && (
+            <>
+              <Text style={styles.textStyle}>Tổng tiền: </Text>
+              <View style={styles.rightContainer}>
+                <Text style={[styles.textStyle, { fontWeight: "normal" }]}>
+                  {formatCurrency(totalPrice)}
+                </Text>
               </View>
             </>
           )}
         </View>
       </View>
-      <View style={styles.calculateTotal}>
-        {totalPrice > 0 && (
-          <>
-            <Text style={styles.textStyle}>Tổng tiền: </Text>
-            <View style={styles.rightContainer}>
-              <Text style={[styles.textStyle, { fontWeight: "normal" }]}>
-                {formatCurrency(totalPrice)}
-              </Text>
-            </View>
-          </>
-        )}
-      </View>
-    </View>
+      <NotificationPromotion
+        promotion={promotion}
+        modalVisible={modalVisible}
+        handleClose={handleClose}
+      />
+    </>
   );
 };
 

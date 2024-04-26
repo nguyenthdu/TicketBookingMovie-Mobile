@@ -22,13 +22,15 @@ export default BookingUtils = () => {
       newTotalPrice += seatPrice + roomPrice;
     });
 
+    console.log("newTotalPrice sau khi tinh ghe: ", newTotalPrice);
+
     // Tính tổng tiền cho các món đồ ăn
     foods.forEach((food) => {
       newTotalPrice += food.price * food?.quantity;
     });
 
     // Áp dụng khuyến mãi nếu có
-    finallyPrice = ApplyPromotion(
+    const finallyPrice = ApplyPromotion(
       newTotalPrice,
       promotionBill,
       seats,
@@ -49,10 +51,6 @@ export default BookingUtils = () => {
   ) => {
     var newTotalPrice = totalPrice;
 
-    if (promotionBill?.promotionDiscountDetailDto) {
-      newTotalPrice = ApplyDiscount(newTotalPrice, promotionBill);
-    }
-
     if (promotionSeat?.promotionTicketDetailDto) {
       newTotalPrice = ApplyTicket(seats, newTotalPrice, promotionSeat);
     }
@@ -61,10 +59,16 @@ export default BookingUtils = () => {
       newTotalPrice = ApplyFood(foods, newTotalPrice, promotionFood);
     }
 
+    if (promotionBill?.promotionDiscountDetailDto) {
+      newTotalPrice = ApplyDiscount(newTotalPrice, promotionBill);
+    }
+
+    console.log("newTotalPrice sau khi áp dụng khuyến mãi: ", newTotalPrice);
     return newTotalPrice;
   };
 
   const ApplyDiscount = (totalPrice, promotionBill) => {
+    console.log("totalPrice trong discount: ", totalPrice);
     if (promotionBill?.promotionDiscountDetailDto?.typeDiscount === "PERCENT") {
       const minBillValue =
         promotionBill.promotionDiscountDetailDto.minBillValue;
@@ -77,6 +81,7 @@ export default BookingUtils = () => {
         // Kiểm tra nếu giá giảm đã bằng hoặc vượt quá maxValue thì giữ nguyên giá trị tổng giá
         const finalPrice =
           discountedPrice <= maxValue ? discountedPrice : totalPrice - maxValue;
+        console.log("totalPrice va promotion bill ko bị reset: ", finalPrice);
         return finalPrice;
       } else {
         dispatch(doSetSelectedPromotionBill({}));
@@ -90,12 +95,14 @@ export default BookingUtils = () => {
       const discountValue =
         promotionBill?.promotionDiscountDetailDto?.discountValue;
       const finalPrice = totalPrice - discountValue;
+      console.log("nó có vào không? finalPrice: ", finalPrice);
       return finalPrice;
     }
   };
 
   const ApplyTicket = (seats, totalPrice, promotionSeat) => {
     // Kiểm tra nếu có thông tin về chi tiết khuyến mãi vé
+    console.log("totalPrice trong ApplyTicket 1: ", totalPrice);
     if (promotionSeat?.promotionTicketDetailDto) {
       const {
         typeSeatRequired,
@@ -149,12 +156,14 @@ export default BookingUtils = () => {
       }
     }
 
+    console.log(
+      "totalPrice trong ApplyTicket nó đã trừ tiền của khuyến mãi ghế: ",
+      totalPrice
+    );
     return totalPrice;
   };
 
   const ApplyFood = (foods, totalPrice, promotionFood) => {
-    console.log("promotionFood: ", promotionFood);
-
     // Kiểm tra nếu có thông tin về chi tiết khuyến mãi đồ ăn
     if (promotionFood?.promotionFoodDetailDto) {
       const {
@@ -181,7 +190,6 @@ export default BookingUtils = () => {
               return food;
             }
           });
-
           // Kiểm tra nếu có đủ món ăn khuyến mãi, sản phẩm tặng khác loại sản phẩm yêu cầu
           if (promotionFoods[0]?.quantity >= 0) {
             const promotionFoodPrice =

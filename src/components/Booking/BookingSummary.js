@@ -39,8 +39,8 @@ const BookingSummary = () => {
   const totalPrice = useSelector((state) => state.booking.totalPrice);
 
   useEffect(() => {
-    console.log("selectedPromotionBill: ", selectedPromotionBill);
-  }, [selectedPromotionBill]);
+    console.log("totalPrice: ", totalPrice);
+  }, [totalPrice]);
 
   const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
   const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
@@ -67,7 +67,7 @@ const BookingSummary = () => {
   };
 
   useEffect(() => {
-    if (selectedSeats || selectedFoods || selectedPromotionBill) {
+    if (selectedSeats || selectedFoods) {
       CalculateTotalPrice(
         selectedSeats,
         selectedFoods,

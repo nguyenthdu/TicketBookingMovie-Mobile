@@ -124,4 +124,26 @@ export default StyleSheet.create({
     fontSize: FONTSIZE.size_16,
     fontWeight: "bold",
   },
+  // movie --------------------------
+  textMovie: {
+    fontSize: FONTSIZE.size_18,
+    fontWeight: "bold",
+  },
+  cardMovie: {
+    flex: 1 / 3,
+    flexDirection: "row",
+    backgroundColor: COLORS.White,
+    padding: 10,
+  },
+  cardTransaction: {
+    flex: 2 / 3,
+    backgroundColor: COLORS.White,
+    padding: 10,
+    marginBottom: 10,
+  },
+  cardPayment: {
+    flex: 1,
+    backgroundColor: COLORS.White,
+    padding: 10,
+  },
 });

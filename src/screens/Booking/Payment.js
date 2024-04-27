@@ -1,24 +1,30 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  FlatList,
-  ScrollView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { COLORS, FONTSIZE } from "../../theme/theme";
 import { MaterialIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 import {
-  fetchMoviesShowing,
-  fetchMoviesTrending,
-  fetchMoviesUpcoming,
-} from "../../services/MoiveAPI";
-import Genres from "../../components/Genres";
-import ShowTime from "./ShowTime";
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useSelector } from "react-redux";
+import PaymentItem from "../../components/Booking/PaymentItem";
+import PromotionItem from "../../components/Booking/PromotionItem";
+import Divider from "../../components/Divider/Divider";
+import { fetchMoviesTrending } from "../../services/MoiveAPI";
+import { COLORS, FONTSIZE } from "../../theme/theme";
+import { PriceFood, PriceSeats } from "../../utils/bookingUtils";
+import {
+  dateFormat,
+  formatCurrency,
+  formatTime,
+  getDayInfo,
+} from "../../utils/formatData";
+import styles from "./Styles";
+
 const { width, height } = Dimensions.get("window");
+
 const bookingDetail = {
   seat: [
     {
@@ -99,7 +105,23 @@ const bookingDetail = {
     date: "2021-10-10",
   },
 };
+
+const data = [{ id: 1, title: "Thanh toán thông qua ứng dụng VNPAY" }];
+
 export default function Payment({ navigation }) {
+  const selectedMovie = useSelector((state) => state.booking.selectedMovie);
+  const selectedShowTime = useSelector(
+    (state) => state.booking.selectedShowTime
+  );
+  const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+  const selectedRoom = useSelector((state) => state.booking.selectedRoom);
+  const selectedFoods = useSelector((state) => state.booking.selectedFoods);
+  const totalPrice = useSelector((state) => state.booking.totalPrice);
+
+  useEffect(() => {
+    console.log("totalPrice", totalPrice);
+  }, [totalPrice]);
+
   const [movie, setMovie] = useState();
   useEffect(() => {
     const fetchMovie = async () => {
@@ -118,397 +140,185 @@ export default function Payment({ navigation }) {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: COLORS.White,
-      }}
-    >
+    <View style={[styles.container]}>
+      <TouchableOpacity onPress={() => handleGoBack()} style={styles.btnGoBack}>
+        <MaterialIcons name="arrow-back" size={24} color="black" />
+        <Text style={[styles.textStyle, styles.titleStyle]}>Thanh toán</Text>
+      </TouchableOpacity>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 10,
-          borderBottomWidth: 1,
-          marginTop: 20,
-          borderBottomColor: COLORS.Grey,
+          flex: 2 / 3,
+          marginTop: 10,
+          backgroundColor: COLORS.Grey,
         }}
       >
-        <TouchableOpacity
-          style={{
-            padding: 10,
-          }}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <MaterialIcons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
+        {/* phim */}
+        <View style={styles.cardMovie}>
+          <Image
+            source={{ uri: selectedMovie?.imageLink }}
+            style={{
+              borderRadius: 10,
+              width: width * 0.3,
+              resizeMode: "contain",
+            }}
+          />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.textMovie}>{selectedMovie?.name}</Text>
+            <Text style={{ fontSize: FONTSIZE.size_16 }}>
+              Rạp: {selectedShowTime?.cinemaName}
+            </Text>
+            <Text style={{ fontSize: FONTSIZE.size_16 }}>
+              Phòng: {selectedShowTime?.roomName}
+            </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
+                {formatTime(selectedShowTime?.showTime)}{" "}
+              </Text>
+              <Text style={{ fontSize: FONTSIZE.size_16 }}>
+                - {getDayInfo(selectedShowTime?.showDate)},{" "}
+                {dateFormat(selectedShowTime?.showDate)}
+              </Text>
+            </View>
+          </View>
+        </View>
+        {/* Thông tin giao dịch */}
+        <Text style={{ marginLeft: 15, marginBottom: 10 }}>
+          Thông tin giao dịch
+        </Text>
+        <View style={styles.cardTransaction}>
+          {/* ghế */}
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <Text style={{ fontSize: FONTSIZE.size_16, flex: 1 }}>
+              {selectedSeats.length}x ghế:{" "}
+              {selectedSeats.map((seat) => seat.name).join(", ")}
+            </Text>
+            <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
+              {formatCurrency(PriceSeats(selectedSeats, selectedRoom.price))}
+            </Text>
+          </View>
+          <Divider
+            bdWidth={2}
+            marginTop={1}
+            marginBottom={10}
+            borderStyle={"dashed"}
+            lineWidth={1}
+          />
+          {/* đồ ăn */}
+          <View style={{ marginBottom: 10 }}>
+            {selectedFoods.map((food, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontSize: FONTSIZE.size_16 }}>
+                  {food.quantity}x {food.name}
+                </Text>
+                <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
+                  {formatCurrency(PriceFood(food))}
+                </Text>
+              </View>
+            ))}
+          </View>
+          {selectedFoods.length > 0 && (
+            <Divider
+              bdWidth={2}
+              marginTop={1}
+              marginBottom={10}
+              borderStyle={"dashed"}
+              lineWidth={1}
+            />
+          )}
+          <View
+            style={{
+              marginBottom: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
+              Tổng cộng
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              {formatCurrency(
+                PriceSeats(selectedSeats, selectedRoom.price) +
+                  selectedFoods.reduce((acc, food) => acc + PriceFood(food), 0)
+              ) === totalPrice ? (
+                <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
+                  {formatCurrency(totalPrice)}
+                </Text>
+              ) : (
+                <>
+                  <Text
+                    style={{
+                      fontSize: FONTSIZE.size_16,
+                      fontWeight: "500",
+                      marginRight: 10,
+                      color: COLORS.DarkGrey,
+                      textDecorationLine: "line-through",
+                      textDecorationStyle: "solid",
+                    }}
+                  >
+                    {formatCurrency(
+                      PriceSeats(selectedSeats, selectedRoom.price) +
+                        selectedFoods.reduce(
+                          (acc, food) => acc + PriceFood(food),
+                          0
+                        )
+                    )}
+                  </Text>
+                  <Text
+                    style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}
+                  >
+                    {formatCurrency(totalPrice)}
+                  </Text>
+                </>
+              )}
+            </View>
+          </View>
+          <PromotionItem />
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1 / 3,
+          backgroundColor: COLORS.Grey,
+        }}
+      >
         <Text
           style={{
-            flex: 1,
-            fontSize: FONTSIZE.size_24,
-            fontWeight: "bold",
-            textAlign: "center",
-            color: COLORS.Orange,
+            marginLeft: 15,
+            marginBottom: 10,
           }}
         >
-          Thanh toán
+          Phương thức thanh toán
         </Text>
-      </View>
-      {/* TODO: Thông tin phim */}
-      <ScrollView>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 10,
-            height: height / 3,
-            marginHorizontal: 16,
-          }}
-        >
-          <Image
-            source={{ uri: movie?.imageLink }}
-            style={{
-              width: width * 0.4,
-              resizeMode: "cover",
-              borderRadius: 10,
-            }}
-          />
-          <View
-            style={{
-              marginLeft: 10,
-              flex: 1,
-            }}
-          >
-            <Text style={{ fontSize: FONTSIZE.size_20, fontWeight: "bold" }}>
-              {movie?.name}
-            </Text>
-            <View style={styles.contentInfo}>
-              <Text style={styles.textInfoLabel}>Thời lượng</Text>
-              <Text style={styles.textInfo}>: {movie?.durationMinutes}</Text>
-            </View>
-            <View style={styles.contentInfo}>
-              <Text style={styles.textInfoLabel}>Quốc gia</Text>
-              <Text style={styles.textInfo}>: {movie?.country}</Text>
-            </View>
-            <View style={styles.contentInfo}>
-              <Text numberOfLines={2} style={styles.textInfoLabel}>
-                Đạo diễn
-              </Text>
-              <Text style={styles.textInfo}>: {movie?.director}</Text>
-            </View>
-            <View numberOfLines={4} style={styles.contentInfo}>
-              <Text style={styles.textInfoLabel}>Diễn viên</Text>
-              <Text style={styles.textInfo}>: {movie?.cast}</Text>
-            </View>
-            {/*  <View style={styles.contentInfo}>
-            <Text style={styles.textInfoLabel}>Thể loại</Text>
-            <Genres genres={movie?.genres} />
-          </View> */}
-            <View style={styles.contentInfo}>
-              <Text style={styles.textInfoLabel}>Ngày chiếu</Text>
-              <Text style={styles.textInfo}>: {movie?.releaseDate}</Text>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            marginHorizontal: 16,
-            backgroundColor: "#F7F7F7",
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: COLORS.Grey,
-            padding: 10,
-            marginTop: 10,
-          }}
-        >
+        <View style={styles.cardPayment}>
           <Text
             style={{
-              fontSize: FONTSIZE.size_20,
-              fontWeight: "bold",
-              textAlign: "center",
-              color: COLORS.Black,
+              fontSize: FONTSIZE.size_16,
+              fontWeight: "500",
               marginBottom: 10,
-              borderBottomWidth: 1,
-              borderBottomColor: COLORS.Grey,
-            }}
-          >
-            Chi tiết hóa đơn
-          </Text>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Têm rạp</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.cinema.name}
-            </Text>
-          </View>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Địa chỉ</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.cinema.address}
-            </Text>
-          </View>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Phòng</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.room.name}
-            </Text>
-          </View>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Loại phòng</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.room.type}
-            </Text>
-          </View>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Ngày chiếu</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.ShowTime.date}
-            </Text>
-          </View>
-          <View style={styles.contentBookDetail}>
-            <Text style={styles.textDetailLabel}>Giờ chiếu</Text>
-            <Text style={styles.contentBookDetail}>
-              {bookingDetail.ShowTime.time}
-            </Text>
-          </View>
-          <View
-            style={{
-              //border nét đứt
-              borderStyle: "dashed",
-              borderWidth: 1,
-              borderColor: COLORS.Grey,
-              marginTop: 5,
-            }}
-          />
-
-          {/* Hiển thị danh sách ghế */}
-          <View style={styles.contentBookDetail}>
-            <FlatList
-              data={bookingDetail.seat}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: 5,
-                  }}
-                >
-                  <Text style={styles.contentBookDetail}>{item.name}</Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      width: width * 0.5,
-                    }}
-                  >
-                    <Text style={styles.contentBookDetail}>{item.type}</Text>
-                    <Text style={styles.contentBookDetail}>{item.pirce}</Text>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
-          <View
-            style={{
-              //border nét đứt
-              borderStyle: "dashed",
-              borderWidth: 1,
-              borderColor: COLORS.Grey,
-              marginTop: 5,
-            }}
-          />
-          <View style={styles.contentBookDetail}>
-            <FlatList
-              data={bookingDetail.food}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: 5,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.imageLink }}
-                      style={{ width: 50, height: 50, marginRight: 10 }}
-                    />
-                    <Text style={styles.contentBookDetail}>{item.name}</Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      width: width * 0.4,
-                    }}
-                  >
-                    <Text style={styles.contentBookDetail}>
-                      {item.quantity}
-                    </Text>
-                    <Text style={styles.contentBookDetail}>
-                      {item.price * item.quantity}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
-        </View>
-      </ScrollView>
-      <View
-        style={{
-          marginHorizontal: 16,
-          marginBottom: 20,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_18,
-              textAlign: "center",
-              color: COLORS.Black,
-              marginTop: 10,
-            }}
-          >
-            Tổng tiền
-          </Text>
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_18,
-              textAlign: "center",
-              color: COLORS.Black,
-              marginTop: 10,
-            }}
-          >
-            10000
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 5,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_18,
-              textAlign: "center",
-              color: COLORS.Black,
-            }}
-          >
-            Khuyến mãi
-          </Text>
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_18,
-              textAlign: "center",
-              color: COLORS.Black,
-            }}
-          >
-            0
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 5,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_20,
-              textAlign: "center",
-              color: COLORS.Orange,
-              fontWeight: "bold",
-            }}
-          >
-            Tổng cộng
-          </Text>
-          <Text
-            style={{
-              fontSize: FONTSIZE.size_20,
-              textAlign: "center",
-              color: COLORS.Orange,
-              fontWeight: "bold",
-            }}
-          >
-            10000
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: COLORS.Orange,
-            borderRadius: 24,
-            padding: 10,
-            justifyContent: "center",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 10,
-          }}
-          onPress={handlePayment}
-        >
-          <Text
-            style={{
-              color: COLORS.White,
-              textAlign: "center",
-              fontSize: FONTSIZE.size_20,
             }}
           >
             Thanh toán
           </Text>
-        </TouchableOpacity>
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <PaymentItem title={item.title} />}
+          />
+        </View>
       </View>
+      <TouchableOpacity onPress={handlePayment} style={styles.btnContinue}>
+        <Text style={styles.textBtnContinue}>Thanh toán</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  contentInfo: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-
-  textInfoLabel: {
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.DarkGrey,
-    width: width / 4,
-  },
-  textInfo: {
-    fontSize: FONTSIZE.size_14,
-    color: COLORS.DarkGrey,
-  },
-  contentBookDetail: {
-    flexDirection: "row",
-    marginTop: 5,
-    justifyContent: "space-between",
-  },
-  textDetailLabel: {
-    fontSize: FONTSIZE.size_16,
-    color: COLORS.DarkGrey,
-  },
-  textDetail: {
-    fontSize: FONTSIZE.size_16,
-    color: COLORS.Black,
-  },
-});

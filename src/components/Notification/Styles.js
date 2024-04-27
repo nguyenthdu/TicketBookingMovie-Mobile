@@ -9,7 +9,7 @@ export default StyleSheet.create({
   },
   modalView: {
     width: "80%",
-    minHeight: "25%",
+    height: "35%",
     backgroundColor: "white",
     borderRadius: 10,
     paddingTop: 15,

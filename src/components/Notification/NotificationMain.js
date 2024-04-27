@@ -28,7 +28,7 @@ export const CustomAlert = ({ modalVisible, message, hideAlert }) => {
       onRequestClose={hideAlert}
     >
       <View style={styles.centeredView}>
-        <View style={[styles.modalView]}>
+        <View style={[styles.modalView, { height: "25%" }]}>
           <AntDesign name="warning" size={24} style={styles.icon} />
           <View style={styles.content}>
             <Text style={styles.modalText}>Thông báo</Text>

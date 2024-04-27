@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Divider } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
+import imageWarning from "../../assets/images/warning.png";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import QuantitySelector from "../../components/Booking/QuantitySelector";
 import NotificationPromotion from "../../components/Notification/NotificationPromotion";
@@ -153,7 +154,7 @@ const Food = ({ route, navigation }) => {
                 }}
               >
                 <Image
-                  source={{ uri: item.image }}
+                  source={item?.image ? { uri: item.image } : imageWarning}
                   style={{
                     width: 100,
                     height: 100,

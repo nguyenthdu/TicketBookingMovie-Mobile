@@ -223,3 +223,23 @@ export default BookingUtils = () => {
 
   return { CalculateTotalPrice };
 };
+
+// tính tiền ghế không áp khuyến mãi
+export const PriceSeats = (seats, roomPrice) => {
+  let newTotalPrice = 0;
+  // Tính tổng tiền cho các ghế ngồi
+  seats.forEach((seat) => {
+    const seatPrice = seat.price;
+    newTotalPrice += seatPrice + roomPrice;
+  });
+
+  return newTotalPrice;
+};
+
+// tính tiền đồ ăn không áp khuyến mãi
+export const PriceFood = (food) => {
+  let newTotalPrice = 0;
+  newTotalPrice += food.price * food?.quantity;
+
+  return newTotalPrice;
+};

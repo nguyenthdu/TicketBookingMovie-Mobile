@@ -64,6 +64,7 @@ export default function ShowTime({ route, navigation }) {
     if (showDate.length <= 0) {
       setShowTimes([]);
       dispatch(doSetSelectedShowTime({}));
+      setIsFocusTime({});
     }
   }, [showDate]);
 
@@ -175,6 +176,7 @@ export default function ShowTime({ route, navigation }) {
   const handleSelectedDate = (date) => {
     setIsFocusDate(date);
     dispatch(doSetSelectedShowTime({}));
+    setIsFocusTime({});
   };
 
   return (

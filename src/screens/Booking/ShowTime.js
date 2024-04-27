@@ -41,12 +41,11 @@ const { width, height } = Dimensions.get("window");
 
 export default function ShowTime({ route, navigation }) {
   const { movie } = route.params;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(doSetSelectedMovie(movie));
   }, [movie]);
-
-  const dispatch = useDispatch();
 
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
@@ -64,6 +63,7 @@ export default function ShowTime({ route, navigation }) {
   useEffect(() => {
     if (showDate.length <= 0) {
       setShowTimes([]);
+      dispatch(doSetSelectedShowTime({}));
     }
   }, [showDate]);
 
@@ -170,6 +170,11 @@ export default function ShowTime({ route, navigation }) {
       );
     }
     return null;
+  };
+
+  const handleSelectedDate = (date) => {
+    setIsFocusDate(date);
+    dispatch(doSetSelectedShowTime({}));
   };
 
   return (
@@ -303,7 +308,7 @@ export default function ShowTime({ route, navigation }) {
             const isSelected = isFocusDate === item;
             return (
               <TouchableOpacity
-                onPress={() => setIsFocusDate(item)}
+                onPress={() => handleSelectedDate(item)}
                 style={{
                   backgroundColor: isSelected ? COLORS.Orange : COLORS.White,
                   marginLeft: 8,

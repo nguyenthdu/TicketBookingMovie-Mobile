@@ -9,7 +9,7 @@ export default StyleSheet.create({
   },
   modalView: {
     width: "80%",
-    height: "35%",
+    minHeight: "25%",
     backgroundColor: "white",
     borderRadius: 10,
     paddingTop: 15,
@@ -50,11 +50,16 @@ export default StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
+    // minHeight: "5%",
     flex: 1,
   },
   message: {
     textAlign: "center",
     fontWeight: "300",
     fontSize: FONTSIZE.size_18,
+  },
+  icon: {
+    color: COLORS.warning,
+    fontSize: 65,
   },
 });

@@ -1,21 +1,25 @@
-import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import Notification from "../../components/Notification/NotificationPromotion";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
 
 export default function ProfileScreen() {
-  const [modalVisible, setModalVisible] = useState(false);
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
+
   return (
     <View style={styles.centeredView}>
-      <Notification
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
-      <Pressable
+      <TouchableOpacity
         style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
+        onPress={() => showAlert("Your message")}
       >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
+        <Text>Show Alert</Text>
+      </TouchableOpacity>
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
     </View>
   );
 }

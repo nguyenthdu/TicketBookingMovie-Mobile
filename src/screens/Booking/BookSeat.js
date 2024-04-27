@@ -1,21 +1,26 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 import React from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import Divider from "../../components/Divider/Divider";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
 import SeatMap from "../../components/Seat/SeatMap";
 import SeatOption from "../../components/Seat/SeatOption";
 import { COLORS } from "../../theme/theme";
 import styles from "./Styles";
 
 const BookSeat = ({ navigation, route }) => {
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
+
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
   //handle book seat
   const handleBookSeat = () => {
     if (selectedSeats.length === 0) {
-      Alert.alert("Thông báo", "Vui lòng chọn ghế trước khi tiếp tục");
+      showAlert("Vui lòng chọn ghế trước khi tiếp tục");
       return;
     }
     navigation.navigate("Food", { cinemaId: route.params.cinemaId });
@@ -75,6 +80,11 @@ const BookSeat = ({ navigation, route }) => {
           <Text style={styles.textBtnContinue}>Tiếp tục</Text>
         </TouchableOpacity>
       </View>
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
     </View>
   );
 };

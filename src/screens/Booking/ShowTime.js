@@ -1,7 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Dimensions,
   FlatList,
   Text,
@@ -11,6 +10,9 @@ import {
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
 import {
   doSetSelectedCinema,
   doSetSelectedFoods,
@@ -39,6 +41,8 @@ const { width, height } = Dimensions.get("window");
 export default function ShowTime({ route, navigation }) {
   const { movie } = route.params;
   const dispatch = useDispatch();
+
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
   const [location, setLocation] = useState(locations[0]?.value);
   const [cinemas, setCinemas] = useState([]);
@@ -132,7 +136,7 @@ export default function ShowTime({ route, navigation }) {
 
   const handleBookSeat = () => {
     if (Object.keys(isFocusTime).length === 0) {
-      Alert.alert("Thông báo", "Vui lòng chọn giờ chiếu");
+      showAlert("Vui lòng chọn giờ chiếu trước khi tiếp tục");
       return;
     }
     navigation.navigate("BookSeat", { cinemaId: cinema });
@@ -407,6 +411,11 @@ export default function ShowTime({ route, navigation }) {
       <TouchableOpacity onPress={handleBookSeat} style={styles.btnContinue}>
         <Text style={styles.textBtnContinue}>Tiếp tục</Text>
       </TouchableOpacity>
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
     </SafeAreaView>
   );
 }

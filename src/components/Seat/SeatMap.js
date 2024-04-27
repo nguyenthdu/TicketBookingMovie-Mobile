@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { doSetSelectedSeats } from "../../redux/booking/bookingSlice";
 import { fetchSeats } from "../../services/ShowTimeAPI";
 import { COLORS } from "../../theme/theme";
+import NotificationMain, {
+  CustomAlert,
+} from "../Notification/NotificationMain";
 import styles from "./Styles";
 
 const SeatMap = ({ isFocusTime }) => {
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
+
   // redux
   const dispatch = useDispatch();
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
@@ -46,15 +51,6 @@ const SeatMap = ({ isFocusTime }) => {
     }
   };
 
-  useEffect(() => {
-    // Kiểm tra xem số lượng ghế đã chọn có đạt tối đa (8 ghế) hay chưa
-    // if (selectedSeats.length >= 8) {
-    //   Alert.alert("Thông báo", "Chỉ được chọn tối đa 8 ghế!");
-    //   console.log("Chỉ được chọn tối đa 8 ghế!");
-    //   return;
-    // }
-  }, [selectedSeats.length > 8]);
-
   const handleSeatClick = (seat) => {
     // Kiểm tra xem ghế đã được chọn trước đó chưa
     const seatIndex = selectedSeats.findIndex(
@@ -73,8 +69,7 @@ const SeatMap = ({ isFocusTime }) => {
       dispatch(doSetSelectedSeats(updatedSeats));
     } else {
       if (selectedSeats.length >= 8) {
-        Alert.alert("Thông báo", "Chỉ được chọn tối đa 8 ghế!");
-        console.log("Chỉ được chọn tối đa 8 ghế!");
+        showAlert(`Chỉ được chọn tối đa 8 ghế!`);
         return;
       }
       // Nếu ghế chưa được chọn trước đó, thêm nó vào danh sách các ghế đã chọn
@@ -156,7 +151,16 @@ const SeatMap = ({ isFocusTime }) => {
     return rows.map((row, index) => renderRow(row, index + 1));
   };
 
-  return <View style={styles.container}>{renderSeatMap()}</View>;
+  return (
+    <View style={styles.container}>
+      {renderSeatMap()}
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
+    </View>
+  );
 };
 
 export default SeatMap;

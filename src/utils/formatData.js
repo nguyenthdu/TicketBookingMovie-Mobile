@@ -106,3 +106,23 @@ export const formatCurrency = (currency) => {
     currency: "VND",
   }).format(currency ?? 0);
 };
+
+export const getDayInfo = (date) => {
+  const days = [
+    "Chủ Nhật",
+    "Thứ Hai",
+    "Thứ Ba",
+    "Thứ Tư",
+    "Thứ Năm",
+    "Thứ Sáu",
+    "Thứ Bảy",
+  ];
+  const currentDate = new Date();
+  const inputDate = new Date(date);
+
+  const dayOfWeek = days[inputDate.getDay()];
+
+  return inputDate.toDateString() === currentDate.toDateString()
+    ? "Hôm nay"
+    : dayOfWeek;
+};

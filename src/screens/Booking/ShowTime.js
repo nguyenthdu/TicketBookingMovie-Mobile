@@ -16,6 +16,7 @@ import NotificationMain, {
 import {
   doSetSelectedCinema,
   doSetSelectedFoods,
+  doSetSelectedMovie,
   doSetSelectedPromotionBill,
   doSetSelectedPromotionFood,
   doSetSelectedPromotionSeat,
@@ -40,6 +41,11 @@ const { width, height } = Dimensions.get("window");
 
 export default function ShowTime({ route, navigation }) {
   const { movie } = route.params;
+
+  useEffect(() => {
+    dispatch(doSetSelectedMovie(movie));
+  }, [movie]);
+
   const dispatch = useDispatch();
 
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();

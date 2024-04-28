@@ -1,14 +1,17 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import CustomDateInput from "../../components/CustomInput/DateInput";
 import RadioButton from "../../components/CustomInput/RadioButton";
 import Logo from "../../components/Logo/Logo";
 import { doSetLoading } from "../../redux/spin/spinSlice";
+import { CallSignUp } from "../../services/UserAPI";
+import { dateFormatYYMMDD } from "../../utils/formatData";
 import styles from "./Styles";
 
 const SignUp = ({ navigation }) => {
@@ -45,7 +48,7 @@ const SignUp = ({ navigation }) => {
     email: /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|icloud)\.com$/,
     phoneNumber:
       /^(03[2-9]|07[0-9]|08[1-9]|09[1|2|4|6|8|2|6|8]|05[6|8|9]|059|099)\d{7}$/,
-    dateOfBirth: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
+    // dateOfBirth: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
     password:
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   };
@@ -104,42 +107,73 @@ const SignUp = ({ navigation }) => {
     navigation.goBack();
   };
 
-  const handleSubmit = () => {
-    dispatch(doSetLoading(true));
-    setTimeout(() => {
-      if (
-        !userName ||
-        !email ||
-        !phoneNumber ||
-        !dateOfBirth ||
-        !password ||
-        errorUserName ||
-        errorEmail ||
-        errorPhoneNumber ||
-        errorDateOfBirth ||
-        errorPassword
-      ) {
-        if (!userName) {
-          setErrorUserName("Tên không được để trống");
-        }
-        if (!email) {
-          setErrorEmail("Email không được để trống");
-        }
-        if (!phoneNumber) {
-          setErrorPhoneNumber("Số điện thoại không được để trống");
-        }
-        if (!dateOfBirth) {
-          setErrorDateOfBirth("Ngày sinh không được để trống");
-        }
-        if (!password) {
-          setErrorPassword("Mật khẩu không được để trống");
-        }
-        dispatch(doSetLoading(false));
-      } else {
-        Alert.alert("Đăng ký thành công");
-        dispatch(doSetLoading(false));
+  const handleSubmit = async () => {
+    if (
+      !userName ||
+      !email ||
+      !phoneNumber ||
+      !dateOfBirth ||
+      !password ||
+      errorUserName ||
+      errorEmail ||
+      errorPhoneNumber ||
+      errorDateOfBirth ||
+      errorPassword
+    ) {
+      if (!userName) {
+        setErrorUserName("Tên không được để trống");
+        return;
       }
-    }, 2000);
+      if (!email) {
+        setErrorEmail("Email không được để trống");
+        return;
+      }
+      if (!phoneNumber) {
+        setErrorPhoneNumber("Số điện thoại không được để trống");
+        return;
+      }
+      if (!dateOfBirth) {
+        setErrorDateOfBirth("Ngày sinh không được để trống");
+        return;
+      }
+      if (!password) {
+        setErrorPassword("Mật khẩu không được để trống");
+        return;
+      }
+      return;
+    }
+
+    const birthday = dateFormatYYMMDD(dateOfBirth);
+    console.log("birthday: ", birthday);
+    // return;
+
+    dispatch(doSetLoading(true));
+    const resSignUp = await CallSignUp(
+      userName,
+      email,
+      gender,
+      birthday,
+      phoneNumber,
+      password
+    );
+    console.log("resSignUp: ", resSignUp);
+    if (resSignUp?.status === 200) {
+      dispatch(doSetLoading(false));
+      Toast.show({
+        type: "success",
+        text1: "Đăng ký thành công",
+        visibilityTime: 2000,
+      });
+      navigation.navigate("SignIn");
+    } else {
+      dispatch(doSetLoading(false));
+      console.error("error SignUp: ", resSignUp);
+      Toast.show({
+        type: "error",
+        text1: `${resSignUp?.message || "Đăng ký thất bại"}`,
+        visibilityTime: 2000,
+      });
+    }
   };
 
   return (

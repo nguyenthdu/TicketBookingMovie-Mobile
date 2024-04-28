@@ -1,30 +1,82 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Hoshi } from "react-native-textinput-effects";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { COLORS } from "../../theme/theme";
 
-const CustomInput = ({ placeholder, keyboardType, secureTextEntry }) => {
-  const [isFocused, setIsFocused] = useState(false);
+const CustomInput = ({
+  placeholder,
+  keyboardType,
+  secureTextEntry,
+  icon,
+  onChangeText,
+  value,
+  error,
+  handleShowPassword,
+  showPassword,
+}) => {
+  const handleChangeText = (text) => {
+    onChangeText(text);
+  };
 
   return (
-    <Hoshi
-      label={placeholder}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
-      borderColor={isFocused ? "#007bff" : "#000"} // Màu sắc khi trường nhập liệu được tập trung
-      labelStyle={styles.label} // Style cho label
-      inputStyle={styles.input} // Style cho input
-      keyboardType={keyboardType} // Kiểu bàn phím
-      secureTextEntry={secureTextEntry} // Định dạng mật khẩu
-    />
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <AntDesign
+          name={icon}
+          size={24}
+          color={COLORS.Black}
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          placeholderTextColor={COLORS.DarkGrey}
+          onChangeText={handleChangeText}
+          value={value}
+          keyboardType={keyboardType || "default"}
+          secureTextEntry={secureTextEntry || false}
+        />
+        {handleShowPassword && (
+          <MaterialCommunityIcons
+            name={showPassword ? "eye-off" : "eye"}
+            size={24}
+            color="#aaa"
+            style={styles.icon}
+            onPress={handleShowPassword}
+          />
+        )}
+      </View>
+      <View>{error ? <Text style={styles.error}>{error}</Text> : null}</View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  label: {
-    color: "#007bff", // Màu sắc của label
+  container: {
+    marginBottom: 12,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: COLORS.DarkGrey,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   input: {
-    color: "#000", // Màu sắc của input text
+    flex: 1,
+    color: COLORS.Black,
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    marginLeft: 8,
   },
 });
 

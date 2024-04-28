@@ -12,7 +12,15 @@ const data = [
   { id: 3, title: "Câu hỏi thường gặp" },
 ];
 
-export default function ProfileScreen() {
+const ProfileScreen = ({ navigation }) => {
+  const handleSignUp = () => {
+    navigation.navigate("SignUp");
+  };
+
+  const handleSignIn = () => {
+    navigation.navigate("SignIn");
+  };
+
   const renderItem = ({ item, index }) => {
     return (
       <>
@@ -45,11 +53,13 @@ export default function ProfileScreen() {
           </View>
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
+              onPress={() => handleSignUp()}
               style={[styles.button, { backgroundColor: COLORS.Orange }]}
             >
               <Text style={styles.buttonText}>Đăng ký</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => handleSignIn()}
               style={[
                 styles.button,
                 { borderColor: COLORS.Orange, borderWidth: 1 },
@@ -72,4 +82,6 @@ export default function ProfileScreen() {
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default ProfileScreen;

@@ -10,6 +10,8 @@ import ShowTime from "./src/screens/Booking/ShowTime";
 import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
 import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
+import SignIn from "./src/screens/ProfileScreen/SignIn";
+import SignUp from "./src/screens/ProfileScreen/SignUp";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +34,8 @@ function App() {
           <Stack.Screen name="BookSeat" component={BookSeat} />
           <Stack.Screen name="Food" component={Food} />
           <Stack.Screen name="Payment" component={Payment} />
+          <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="SignUp" component={SignUp} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

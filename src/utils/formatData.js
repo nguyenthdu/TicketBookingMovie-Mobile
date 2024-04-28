@@ -99,6 +99,10 @@ export const dateFormat = (date) => {
   return moment(date).format("DD-MM-YYYY");
 };
 
+export const dateFormatYYMMDD = (date) => {
+  return moment(date).format("YYYY-MM-DD");
+};
+
 export const formatCurrency = (currency) => {
   if (!currency) return "";
   return new Intl.NumberFormat("vi-VN", {

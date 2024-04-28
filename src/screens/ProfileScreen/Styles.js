@@ -60,4 +60,12 @@ export default StyleSheet.create({
   main2: {
     backgroundColor: COLORS.White,
   },
+  // ============== SignUp ==============
+  inputContainer: {
+    position: "relative",
+  },
+  containerSignUp: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

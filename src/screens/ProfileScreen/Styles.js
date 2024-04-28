@@ -61,11 +61,41 @@ export default StyleSheet.create({
     backgroundColor: COLORS.White,
   },
   // ============== SignUp ==============
-  inputContainer: {
-    position: "relative",
+  wrapper: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: COLORS.White,
   },
-  containerSignUp: {
-    justifyContent: "center",
+  containerSign: {
+    flex: 1,
+    padding: 20,
+    width: "100%",
+  },
+  titleStyle: {
+    fontWeight: "bold",
+    marginLeft: 10,
+    flex: 1,
+    fontSize: FONTSIZE.size_24,
+    color: COLORS.Black,
+  },
+  inner: {
+    flex: 1,
+    justifyContent: "flex-start",
+    marginTop: 10,
+    gap: 10,
+  },
+  btnContainer: {
+    backgroundColor: COLORS.White,
+  },
+  btn: {
+    backgroundColor: COLORS.Orange,
+    padding: 10,
+    borderRadius: 24,
     alignItems: "center",
+  },
+  textBtn: {
+    fontSize: FONTSIZE.size_20,
+    color: COLORS.White,
+    fontWeight: "bold",
   },
 });

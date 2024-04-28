@@ -1,6 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
+import Spinner from "./src/components/Spin/Spin";
 import TabNavigator from "./src/navigators/TabNavigator";
 import { store } from "./src/redux/store";
 import Food from "./src/screens/Booking/BookFood";
@@ -38,6 +39,7 @@ function App() {
           <Stack.Screen name="SignUp" component={SignUp} />
         </Stack.Navigator>
       </NavigationContainer>
+      <Spinner />
     </Provider>
   );
 }

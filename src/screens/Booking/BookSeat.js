@@ -32,7 +32,7 @@ const BookSeat = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => handleGoBack()} style={styles.btnGoBack}>
+      <TouchableOpacity onPress={() => handleGoBack()}>
         <MaterialIcons name="arrow-back" size={24} color="black" />
         <Text style={[styles.textStyle, styles.titleStyle]}>Đặt vé</Text>
       </TouchableOpacity>

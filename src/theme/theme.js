@@ -7,6 +7,7 @@ export const COLORS = {
   OrangeRGBA0: "rgba(255,85,36,0)",
   Grey: "#DDDDDD",
   DarkGrey: "#B4B4B8",
+  LightGrey: "#F5F5F5",
   Yellow: "#E1CD17",
   White: "#FFFFFF",
   Pink: "#FF1493",
@@ -16,6 +17,7 @@ export const COLORS = {
   WhiteRGBA32: "rgba(255,255,255,0.32)",
   WhiteRGBA15: "rgba(255,255,255,0.15)",
   warning: "#FFC107",
+  error: "#FF0000",
 };
 
 export const SPACING = {

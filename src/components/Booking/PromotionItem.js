@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import imagePromotionDefault from "../../assets/images/promotion.png";
+import { fetchFoodById } from "../../services/FoodAPI";
 import { fetchTypeSeat } from "../../services/ShowTimeAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import {
@@ -28,7 +29,6 @@ const PromotionItem = ({ promotionBill, promotionSeats, promotionFoods }) => {
   const [typeSeat, setTypeSeat] = useState(null);
   const [seatNamePromotion, setSeatNamePromotion] = useState(null);
   const [seatNameRequired, setSeatNameRequired] = useState(null);
-  const [messageSeat, setMessageSeat] = useState(null);
   const [foodNamePromotion, setFoodNamePromotion] = useState(null);
   const [foodNameRequired, setFoodNameRequired] = useState(null);
 
@@ -56,6 +56,22 @@ const PromotionItem = ({ promotionBill, promotionSeats, promotionFoods }) => {
       setSeatNameRequired(required);
     }
   }, [promotionSeats, typeSeat]);
+
+  useEffect(() => {
+    if (promotionFoods?.code) {
+      getNameFoodRequire(promotionFoods.promotionFoodDetailDto.foodRequired);
+      getNameFoodPromotion(promotionFoods.promotionFoodDetailDto.foodPromotion);
+    }
+  }, [promotionFoods]);
+
+  const getNameFoodRequire = async (foodId) => {
+    const res = await fetchFoodById(foodId);
+    setFoodNameRequired(res.name);
+  };
+  const getNameFoodPromotion = async (foodId) => {
+    const res = await fetchFoodById(foodId);
+    setFoodNamePromotion(res.name);
+  };
 
   const openModal = (promotion) => {
     setSelectedPromotion(promotion);
@@ -86,30 +102,22 @@ const PromotionItem = ({ promotionBill, promotionSeats, promotionFoods }) => {
     ) : null;
   };
 
-  useEffect(() => {
-    if (seatNameRequired && seatNamePromotion) {
-      setMessageSeat(
-        `Bạn được miễn phí ${promotionSeats?.promotionTicketDetailDto.quantityPromotion} ${seatNamePromotion} khi mua ${promotionSeats?.promotionTicketDetailDto.quantityRequired} ${seatNameRequired}.`
-      );
-    }
-  }, [seatNameRequired, seatNamePromotion]);
-
   const message =
     selectedPromotion?.typePromotion === "TICKET"
       ? `Bạn được miễn phí ${selectedPromotion?.promotionTicketDetailDto.quantityPromotion} ${seatNamePromotion} khi mua ${selectedPromotion?.promotionTicketDetailDto.quantityRequired} ${seatNameRequired}.`
       : selectedPromotion?.typePromotion === "FOOD"
-      ? `Chúc mừng bạn đã nhận được ưu đãi ${selectedPromotion?.promotionFoodDetailDto.quantityPromotion}x ${selectedPromotion?.promotionFoodDetailDto.foodPromotion.name} miễn phí khi mua ${selectedPromotion?.promotionFoodDetailDto.quantityRequired}x ${selectedPromotion?.promotionFoodDetailDto.foodRequired.name}.`
+      ? `Bạn được miễn phí ${selectedPromotion?.promotionFoodDetailDto.quantityPromotion} ${foodNamePromotion} khi mua ${selectedPromotion?.promotionFoodDetailDto.quantityRequired} ${foodNameRequired}.`
       : selectedPromotion?.typePromotion === "DISCOUNT"
       ? selectedPromotion?.promotionDiscountDetailDto?.typeDiscount ===
         "PERCENT"
-        ? `Chúc mừng bạn đã nhận được ưu đãi giảm ${
+        ? `Bạn được ưu đãi giảm ${
             selectedPromotion?.promotionDiscountDetailDto.discountValue
           }% khi hóa đơn từ ${formatCurrency(
             selectedPromotion?.promotionDiscountDetailDto.minBillValue
           )}. Giảm tối đa ${formatCurrency(
             selectedPromotion?.promotionDiscountDetailDto.maxValue
           )}.`
-        : `Chúc mừng bạn đã nhận được ưu đãi giảm trực tiếp ${formatCurrency(
+        : `Bạn được ưu đãi giảm trực tiếp ${formatCurrency(
             selectedPromotion?.promotionDiscountDetailDto.discountValue
           )} khi hóa đơn từ ${formatCurrency(
             selectedPromotion?.promotionDiscountDetailDto.minBillValue
@@ -117,6 +125,7 @@ const PromotionItem = ({ promotionBill, promotionSeats, promotionFoods }) => {
             selectedPromotion?.promotionDiscountDetailDto.maxValue
           )}.`
       : "";
+
   return (
     <View>
       {promotionBill?.code && renderPromotion(promotionBill)}

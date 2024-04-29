@@ -47,11 +47,8 @@ export default function Payment({ navigation }) {
     (state) => state.booking.selectedPromotionFood
   );
 
-  useEffect(() => {
-    console.log("totalPrice", totalPrice);
-  }, [totalPrice]);
-
   const [movie, setMovie] = useState();
+
   useEffect(() => {
     const fetchMovie = async () => {
       try {

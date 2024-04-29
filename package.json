@@ -17,6 +17,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@react-navigation/stack": "^6.3.29",
+    "@reactour/tour": "^3.6.1",
     "@reduxjs/toolkit": "^2.2.3",
     "axios": "^1.6.8",
     "expo": "~50.0.14",

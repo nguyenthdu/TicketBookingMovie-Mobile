@@ -9,11 +9,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
 import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
+import { doSetLoading } from "../../redux/spin/spinSlice";
 import { fetchMoviesTrending } from "../../services/MoiveAPI";
+import { createInvoice } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { PriceFood, PriceSeats } from "../../utils/bookingUtils";
 import {
@@ -29,6 +32,8 @@ const { width, height } = Dimensions.get("window");
 const data = [{ id: 1, title: "Thanh toán thông qua ứng dụng VNPAY" }];
 
 export default function Payment({ navigation }) {
+  const dispatch = useDispatch();
+
   const selectedMovie = useSelector((state) => state.booking.selectedMovie);
   const selectedShowTime = useSelector(
     (state) => state.booking.selectedShowTime
@@ -60,8 +65,31 @@ export default function Payment({ navigation }) {
     };
     fetchMovie();
   }, []);
+
   //xử lý thanh toán
-  const handlePayment = () => {
+  const handlePayment = async () => {
+    dispatch(doSetLoading(true));
+    const resPayment = await createInvoice(
+      selectedShowTime.id,
+      selectedSeats,
+      selectedFoods
+    );
+    console.log("resPayment", resPayment);
+    if (resPayment?.status === 200) {
+      dispatch(doSetLoading(false));
+      Toast.show({
+        type: "success",
+        text1: resPayment?.message || "Thanh toán thành công",
+        visibilityTime: 2000,
+      });
+    } else {
+      dispatch(doSetLoading(false));
+      Toast.show({
+        type: "error",
+        text1: resPayment?.message || "Thanh toán thất bại",
+        visibilityTime: 2000,
+      });
+    }
     navigation.navigate("Home");
   };
 

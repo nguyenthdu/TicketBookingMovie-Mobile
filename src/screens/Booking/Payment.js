@@ -25,87 +25,6 @@ import styles from "./Styles";
 
 const { width, height } = Dimensions.get("window");
 
-const bookingDetail = {
-  seat: [
-    {
-      id: 1,
-      name: "A01",
-      row: 1,
-      col: 1,
-      pirce: 100000,
-      status: 1,
-      type: "VIP",
-    },
-    {
-      id: 2,
-      name: "A02",
-      row: 1,
-      col: 2,
-      pirce: 100000,
-      status: 1,
-      type: "STANDARD",
-    },
-    {
-      id: 3,
-      name: "A03",
-      row: 1,
-      col: 3,
-      pirce: 100000,
-      status: 1,
-      type: "VIP",
-    },
-  ],
-  food: [
-    {
-      id: 1,
-      name: "Bánh mì",
-      imageLink:
-        "https://www.coca-cola.com/content/dam/onexp/vn/home-image/coca-cola/Coca-Cola_OT%20320ml_VN-EX_Desktop.png",
-      price: 20000,
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Coca",
-      price: 10000,
-      imageLink:
-        "https://www.coca-cola.com/content/dam/onexp/vn/home-image/coca-cola/Coca-Cola_OT%20320ml_VN-EX_Desktop.png",
-      quantity: 1,
-    },
-    {
-      id: 3,
-      name: "Coca",
-      price: 10000,
-      imageLink:
-        "https://www.coca-cola.com/content/dam/onexp/vn/home-image/coca-cola/Coca-Cola_OT%20320ml_VN-EX_Desktop.png",
-      quantity: 1,
-    },
-    {
-      id: 4,
-      name: "Coca",
-      price: 10000,
-      imageLink:
-        "https://www.coca-cola.com/content/dam/onexp/vn/home-image/coca-cola/Coca-Cola_OT%20320ml_VN-EX_Desktop.png",
-      quantity: 1,
-    },
-  ],
-  cinema: {
-    id: 1,
-    name: "BHD",
-    address: "Vincom Thảo Điền",
-  },
-  room: {
-    id: 1,
-    name: "Room 1",
-    type: "VIP",
-  },
-  ShowTime: {
-    id: 1,
-    time: "10:00 AM",
-    date: "2021-10-10",
-  },
-};
-
 const data = [{ id: 1, title: "Thanh toán thông qua ứng dụng VNPAY" }];
 
 export default function Payment({ navigation }) {
@@ -117,6 +36,15 @@ export default function Payment({ navigation }) {
   const selectedRoom = useSelector((state) => state.booking.selectedRoom);
   const selectedFoods = useSelector((state) => state.booking.selectedFoods);
   const totalPrice = useSelector((state) => state.booking.totalPrice);
+  const selectedPromotionBill = useSelector(
+    (state) => state.booking.selectedPromotionBill
+  );
+  const selectedPromotionSeat = useSelector(
+    (state) => state.booking.selectedPromotionSeat
+  );
+  const selectedPromotionFood = useSelector(
+    (state) => state.booking.selectedPromotionFood
+  );
 
   useEffect(() => {
     console.log("totalPrice", totalPrice);
@@ -137,6 +65,10 @@ export default function Payment({ navigation }) {
   //xử lý thanh toán
   const handlePayment = () => {
     navigation.navigate("Home");
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   return (
@@ -282,7 +214,22 @@ export default function Payment({ navigation }) {
               )}
             </View>
           </View>
-          <PromotionItem />
+          {(selectedPromotionBill?.code ||
+            selectedPromotionSeat?.code ||
+            selectedPromotionFood.length > 0) && (
+            <Divider
+              bdWidth={2}
+              marginTop={1}
+              marginBottom={10}
+              borderStyle={"dashed"}
+              lineWidth={1}
+            />
+          )}
+          <PromotionItem
+            promotionBill={selectedPromotionBill}
+            promotionFoods={selectedPromotionFood}
+            promotionSeats={selectedPromotionSeat}
+          />
         </View>
       </View>
       <View

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { doSetSelectedSeats } from "../../redux/booking/bookingSlice";
-import { fetchSeats } from "../../services/ShowTimeAPI";
+import { fetchSeats, fetchTypeSeat } from "../../services/ShowTimeAPI";
 import { COLORS } from "../../theme/theme";
 import NotificationMain, {
   CustomAlert,
@@ -11,6 +11,17 @@ import styles from "./Styles";
 
 const SeatMap = ({ isFocusTime }) => {
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
+
+  const [typeSeat, setTypeSeat] = useState(null);
+  // fetch type seat để so sánh loại ghế
+  useEffect(() => {
+    getTypeSeat();
+  }, []);
+
+  const getTypeSeat = async () => {
+    const resTypeSeat = await fetchTypeSeat();
+    setTypeSeat(resTypeSeat);
+  };
 
   // redux
   const dispatch = useDispatch();

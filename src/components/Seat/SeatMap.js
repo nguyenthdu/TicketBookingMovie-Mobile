@@ -13,6 +13,7 @@ const SeatMap = ({ isFocusTime }) => {
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
   const [typeSeat, setTypeSeat] = useState(null);
+
   // fetch type seat để so sánh loại ghế
   useEffect(() => {
     getTypeSeat();
@@ -52,14 +53,18 @@ const SeatMap = ({ isFocusTime }) => {
 
   // Hàm để lấy màu tùy theo loại ghế
   const getTypeSeatColor = (seatTypeId, defaultColor) => {
-    switch (seatTypeId) {
-      case 2:
-        return COLORS.Orange; // Màu cam cho ghế vip
-      case 3:
-        return COLORS.Pink; // Màu hồng cho ghế đôi
-      default:
-        return defaultColor; // Sử dụng màu mặc định nếu không phải là loại ghế trên
-    }
+    var seat = null;
+    typeSeat?.forEach((type) => {
+      if (type.id === seatTypeId) {
+        seat = type;
+      }
+    });
+
+    return seat?.name === "STANDARD"
+      ? defaultColor
+      : seat?.name === "VIP"
+      ? COLORS.Orange
+      : COLORS.Pink;
   };
 
   const handleSeatClick = (seat) => {

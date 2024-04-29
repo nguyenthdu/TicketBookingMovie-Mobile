@@ -9,10 +9,12 @@ const Divider = ({
   marginTop,
   marginBottom,
   borderStyle,
+  zIndex,
 }) => {
   return (
     <View
       style={{
+        zIndex: zIndex || null,
         borderBottomWidth: bdWidth || 1,
         borderBottomColor: bdColor || COLORS.Grey,
         marginHorizontal: lineWidth || 16,

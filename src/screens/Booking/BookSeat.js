@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
-import React from "react";
+import React, { useRef } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -18,6 +18,9 @@ const BookSeat = ({ navigation, route }) => {
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+
+  const zoomView = useRef();
+
   //handle book seat
   const handleBookSeat = () => {
     if (selectedSeats.length === 0) {
@@ -37,28 +40,48 @@ const BookSeat = ({ navigation, route }) => {
         <MaterialIcons name="arrow-back" size={24} color="black" />
         <Text style={[styles.textStyle, styles.titleStyle]}>Đặt vé</Text>
       </TouchableOpacity>
-      <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
-      <Divider bdWidth={5} bdColor={COLORS.Yellow} lineWidth={40} />
       {/* render danh sách ghế */}
       <View
         style={{
           flex: 4.1 / 6,
-          flexDirection: "row",
+          // flexDirection: "row",
           marginTop: 10,
           marginHorizontal: 16,
           backgroundColor: COLORS.White,
         }}
       >
         <ReactNativeZoomableView
+          ref={zoomView}
           maxZoom={1.5}
           minZoom={1}
           zoomStep={0.5}
           initialZoom={1}
           bindToBorders={true}
-          onZoomAfter={this.logOutZoomState}
+          onZoomAfter={(event, gestureState, zoomableViewEventObject) => {
+            // console.log("onZoomAfter", zoomableViewEventObject);
+            return null;
+          }}
         >
+          <View style={{ width: "100%", paddingBottom: 5 }}>
+            <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
+            <Divider bdWidth={5} bdColor={COLORS.Yellow} lineWidth={40} />
+          </View>
           <SeatMap />
         </ReactNativeZoomableView>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity
+            style={styles.btnQuantity}
+            onPress={() => zoomView.current.zoomBy(-0.5)}
+          >
+            <MaterialIcons name="remove" size={24} color={COLORS.Orange} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnQuantity}
+            onPress={() => zoomView.current.zoomBy(0.5)}
+          >
+            <MaterialIcons name="add" size={24} color={COLORS.Orange} />
+          </TouchableOpacity>
+        </View>
       </View>
       <Divider />
       {/* Giải thích loại ghế */}

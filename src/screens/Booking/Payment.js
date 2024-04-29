@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
@@ -72,7 +73,7 @@ export default function Payment({ navigation }) {
   };
 
   return (
-    <View style={[styles.container]}>
+    <SafeAreaView style={[styles.container]}>
       <TouchableOpacity onPress={() => handleGoBack()} style={styles.btnGoBack}>
         <MaterialIcons name="arrow-back" size={24} color="black" />
         <Text style={[styles.textStyle, styles.titleStyle]}>Thanh toán</Text>
@@ -178,10 +179,12 @@ export default function Payment({ navigation }) {
                 flexDirection: "row",
               }}
             >
-              {formatCurrency(
-                PriceSeats(selectedSeats, selectedRoom.price) +
-                  selectedFoods.reduce((acc, food) => acc + PriceFood(food), 0)
-              ) === totalPrice ? (
+              {PriceSeats(selectedSeats, selectedRoom.price) +
+                selectedFoods.reduce(
+                  (acc, food) => acc + PriceFood(food),
+                  0
+                ) ===
+              totalPrice ? (
                 <Text style={{ fontSize: FONTSIZE.size_16, fontWeight: "500" }}>
                   {formatCurrency(totalPrice)}
                 </Text>
@@ -266,6 +269,6 @@ export default function Payment({ navigation }) {
       <TouchableOpacity onPress={handlePayment} style={styles.btnContinue}>
         <Text style={styles.textBtnContinue}>Thanh toán</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }

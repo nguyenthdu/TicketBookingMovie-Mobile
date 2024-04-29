@@ -40,9 +40,8 @@ export default StyleSheet.create({
   btnGoBack: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
-    marginTop: 20,
     borderBottomColor: COLORS.Grey,
   },
   textStyle: {

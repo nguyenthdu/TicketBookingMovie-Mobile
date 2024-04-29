@@ -2,6 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import Divider from "../../components/Divider/Divider";
@@ -31,8 +32,8 @@ const BookSeat = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => handleGoBack()}>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.btnGoBack} onPress={() => handleGoBack()}>
         <MaterialIcons name="arrow-back" size={24} color="black" />
         <Text style={[styles.textStyle, styles.titleStyle]}>Đặt vé</Text>
       </TouchableOpacity>
@@ -85,7 +86,7 @@ const BookSeat = ({ navigation, route }) => {
         message={message}
         hideAlert={hideAlert}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

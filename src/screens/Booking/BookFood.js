@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Divider } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import imageWarning from "../../assets/images/warning.png";
 import BookingSummary from "../../components/Booking/BookingSummary";
@@ -123,7 +124,7 @@ const Food = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.btnGoBack}>
         <TouchableOpacity onPress={() => handleGoBack()}>
           <MaterialIcons name="arrow-back" size={24} color="black" />
@@ -240,7 +241,7 @@ const Food = ({ route, navigation }) => {
           handleClose={() => setModalVisible(false)}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

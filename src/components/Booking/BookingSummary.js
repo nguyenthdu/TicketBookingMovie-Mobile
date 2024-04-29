@@ -79,6 +79,10 @@ const BookingSummary = () => {
       );
       dispatch(doSetTotalPrice(price));
     }
+
+    if (selectedSeats.length === 0 && selectedFoods.length === 0) {
+      dispatch(doSetTotalPrice(0));
+    }
   }, [
     selectedSeats,
     selectedFoods,

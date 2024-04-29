@@ -98,4 +98,16 @@ export default StyleSheet.create({
     color: COLORS.White,
     fontWeight: "bold",
   },
+
+  // --------------- SignIn ---------------
+  forgetPassword: {
+    color: COLORS.LightBlue,
+    fontSize: FONTSIZE.size_16,
+  },
+  // --------------- FogetPassword --------
+  textForgetPassword: {
+    color: COLORS.Black,
+    fontSize: FONTSIZE.size_16,
+    textAlign: "center",
+  },
 });

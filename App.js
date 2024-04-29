@@ -12,6 +12,7 @@ import ShowTime from "./src/screens/Booking/ShowTime";
 import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
 import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
+import ForgetPassword from "./src/screens/ProfileScreen/FogetPassword";
 import SignIn from "./src/screens/ProfileScreen/SignIn";
 import SignUp from "./src/screens/ProfileScreen/SignUp";
 
@@ -38,6 +39,7 @@ function App() {
           <Stack.Screen name="Payment" component={Payment} />
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />

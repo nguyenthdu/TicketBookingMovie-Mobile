@@ -33,7 +33,8 @@ export default BookingUtils = () => {
       seats,
       promotionSeat,
       foods,
-      promotionFood
+      promotionFood,
+      roomPrice
     );
 
     return finallyPrice;
@@ -45,12 +46,18 @@ export default BookingUtils = () => {
     seats,
     promotionSeat,
     foods,
-    promotionFood
+    promotionFood,
+    roomPrice
   ) => {
     var newTotalPrice = totalPrice;
 
     if (promotionSeat?.promotionTicketDetailDto) {
-      newTotalPrice = ApplyTicket(seats, newTotalPrice, promotionSeat);
+      newTotalPrice = ApplyTicket(
+        seats,
+        newTotalPrice,
+        promotionSeat,
+        roomPrice
+      );
     }
 
     if (promotionFood?.promotionFoodDetailDto) {
@@ -98,9 +105,9 @@ export default BookingUtils = () => {
     }
   };
 
-  const ApplyTicket = (seats, totalPrice, promotionSeat) => {
+  const ApplyTicket = (seats, totalPrice, promotionSeat, roomPrice) => {
     // Kiểm tra nếu có thông tin về chi tiết khuyến mãi vé
-    console.log("totalPrice trong ApplyTicket 1: ", totalPrice);
+    console.log("totalPrice trong roomPrice 1: ", roomPrice);
     if (promotionSeat?.promotionTicketDetailDto) {
       const {
         typeSeatRequired,
@@ -140,11 +147,11 @@ export default BookingUtils = () => {
                 promotionSeats.length - quantityRequired;
               discountAmount =
                 Math.min(quantityPromotion, promotionSeatQuantity) *
-                promotionSeatPrice;
+                (promotionSeatPrice + roomPrice);
             } else {
               discountAmount =
                 Math.min(quantityPromotion, promotionSeats.length) *
-                promotionSeatPrice;
+                (promotionSeatPrice + roomPrice);
             }
 
             // Trừ giảm giá từ tổng giá

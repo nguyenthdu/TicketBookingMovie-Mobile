@@ -82,6 +82,7 @@ export default function Payment({ navigation }) {
         text1: resPayment?.message || "Thanh toán thành công",
         visibilityTime: 2000,
       });
+      navigation.navigate("Home");
     } else {
       dispatch(doSetLoading(false));
       Toast.show({
@@ -90,7 +91,6 @@ export default function Payment({ navigation }) {
         visibilityTime: 2000,
       });
     }
-    navigation.navigate("Home");
   };
 
   const handleGoBack = () => {

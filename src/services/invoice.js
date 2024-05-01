@@ -15,7 +15,7 @@ export const createInvoice = async (
 
   try {
     const response = await axios.post(
-      `/api/invoice?showTimeId=${showTimeId}&seatIds=${seatIds}&foodIds=${foodIds}&emailUser=test@gmail.com&staffId=1`
+      `/api/invoice?showTimeId=${showTimeId}&seatIds=${seatIds}&foodIds=${foodIds}&emailUser=test@gmail.com&staffId=1&typePay=CASH`
     );
     return response.data;
   } catch (error) {

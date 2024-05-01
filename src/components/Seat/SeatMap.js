@@ -108,7 +108,14 @@ const SeatMap = ({ isFocusTime }) => {
         style={[
           styles.seat,
           { borderWidth: 1, borderColor: seatColor },
-          { backgroundColor: isSelected ? seatColor : "transparent" },
+          {
+            backgroundColor: !seat.status
+              ? COLORS.DarkGrey
+              : isSelected
+              ? seatColor
+              : "transparent",
+            pointerEvents: !seat.status ? "none" : "auto",
+          },
         ]}
         key={index}
         onPress={() => handleSeatClick(seat)}

@@ -12,8 +12,10 @@ import {
 } from "react-native";
 import OpenYoutubeLink from "../../components/OpenYoutubeLink";
 import { COLORS } from "../../theme/theme";
-import { dateFormat } from "../../utils/dateFormat";
+import { dateFormat } from "../../utils/formatData";
+
 const { width, height } = Dimensions.get("window");
+
 export default function MovieDetail({ route, navigation }) {
   const { movie } = route.params;
   return (

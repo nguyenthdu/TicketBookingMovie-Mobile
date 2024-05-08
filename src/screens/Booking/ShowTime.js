@@ -3,29 +3,51 @@ import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   FlatList,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
+import {
+  doSetSelectedCinema,
+  doSetSelectedFoods,
+  doSetSelectedMovie,
+  doSetSelectedPromotionBill,
+  doSetSelectedPromotionFood,
+  doSetSelectedPromotionSeat,
+  doSetSelectedSeats,
+  doSetSelectedShowTime,
+  doSetTotalPrice,
+} from "../../redux/booking/bookingSlice";
 import { fetchAllCinemas } from "../../services/CinemaAPI";
 import { fetchDateShowTime, fetchShowTime } from "../../services/ShowTimeAPI";
-import { COLORS, FONTSIZE } from "../../theme/theme";
+import { COLORS } from "../../theme/theme";
 import {
   convertWeekday,
   filterAndSortDates,
   filterAndSortShowTimes,
   formatTime,
   groupShowTimesByRoom,
-} from "../../utils/convertWeekday";
+} from "../../utils/formatData";
 import { locations } from "../../utils/locations";
+import styles from "./Styles";
 
 const { width, height } = Dimensions.get("window");
 
 export default function ShowTime({ route, navigation }) {
   const { movie } = route.params;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(doSetSelectedMovie(movie));
+  }, [movie]);
+
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
   const [location, setLocation] = useState(locations[0]?.value);
   const [cinemas, setCinemas] = useState([]);
@@ -36,16 +58,13 @@ export default function ShowTime({ route, navigation }) {
   const [isFocusCinema, setIsFocusCinema] = useState(false);
 
   const [isFocusDate, setIsFocusDate] = useState(null);
-  const [isFocusTime, setIsFocusTime] = useState(
-    showTimes.reduce((acc, cur) => {
-      acc[cur.roomName] = null;
-      return acc;
-    }, {}) || {}
-  );
+  const [isFocusTime, setIsFocusTime] = useState({});
 
   useEffect(() => {
     if (showDate.length <= 0) {
       setShowTimes([]);
+      dispatch(doSetSelectedShowTime({}));
+      setIsFocusTime({});
     }
   }, [showDate]);
 
@@ -95,26 +114,39 @@ export default function ShowTime({ route, navigation }) {
     setShowTimes(groupTimeByRoom);
   };
 
-  useEffect(() => {
-    console.log("isFocusTime", isFocusTime);
-  }, [isFocusTime]);
-
   const handleTimeSelect = (roomName, time) => {
-    setIsFocusTime((prevSelectedTimes) => {
-      const newSelectedTimes = { ...prevSelectedTimes };
-      for (const key in newSelectedTimes) {
-        if (key !== roomName) {
-          newSelectedTimes[key] = null;
-        }
+    const newSelectedTimes = { ...isFocusTime };
+    for (const key in newSelectedTimes) {
+      if (key !== roomName) {
+        newSelectedTimes[key] = null;
       }
-      newSelectedTimes[roomName] = time;
-      return newSelectedTimes;
-    });
+    }
+    newSelectedTimes[roomName] = time;
+    setIsFocusTime(newSelectedTimes);
+    dispatch(doSetSelectedShowTime(time));
   };
 
+  useEffect(() => {
+    dispatch(doSetSelectedSeats([]));
+    dispatch(doSetSelectedFoods([]));
+    dispatch(doSetSelectedPromotionBill({}));
+    dispatch(doSetSelectedPromotionSeat({}));
+    dispatch(doSetSelectedPromotionFood({}));
+    dispatch(doSetTotalPrice({}));
+  }, [isFocusTime]);
+
+  useEffect(() => {
+    if (cinema) {
+      dispatch(doSetSelectedCinema(cinema));
+    }
+  }, [cinema]);
+
   const handleBookSeat = () => {
-    const roomKey = Object.keys(isFocusTime)[0];
-    navigation.navigate("BookSeat", { isFocusTime: isFocusTime[roomKey] });
+    if (Object.keys(isFocusTime).length === 0) {
+      showAlert("Vui lòng chọn giờ chiếu trước khi tiếp tục");
+      return;
+    }
+    navigation.navigate("BookSeat", { cinemaId: cinema });
   };
 
   const renderLabelLocation = () => {
@@ -139,6 +171,12 @@ export default function ShowTime({ route, navigation }) {
       );
     }
     return null;
+  };
+
+  const handleSelectedDate = (date) => {
+    setIsFocusDate(date);
+    dispatch(doSetSelectedShowTime({}));
+    setIsFocusTime({});
   };
 
   return (
@@ -239,7 +277,8 @@ export default function ShowTime({ route, navigation }) {
           placeholder={!isFocusCinema ? "Rạp" : "..."}
           searchPlaceholder="Chọn rạp..."
           // nếu cinema null thì lấy cinemas
-          value={cinema || cinemas[0]?.value}
+          // value={cinema || cinemas[0]?.value}
+          value={cinema}
           onFocus={() => setIsFocusCinema(true)}
           onBlur={() => setIsFocusCinema(false)}
           onChange={(item) => {
@@ -271,7 +310,7 @@ export default function ShowTime({ route, navigation }) {
             const isSelected = isFocusDate === item;
             return (
               <TouchableOpacity
-                onPress={() => setIsFocusDate(item)}
+                onPress={() => handleSelectedDate(item)}
                 style={{
                   backgroundColor: isSelected ? COLORS.Orange : COLORS.White,
                   marginLeft: 8,
@@ -373,7 +412,6 @@ export default function ShowTime({ route, navigation }) {
                       >
                         {/* hiện đến phút */}
                         {formatTime(time.showTime)}
-                        {/* {moment().format("HH:mm")} */}
                       </Text>
                     </TouchableOpacity>
                   )}
@@ -383,87 +421,14 @@ export default function ShowTime({ route, navigation }) {
           }}
         />
       </View>
-      <TouchableOpacity
-        onPress={handleBookSeat}
-        style={{
-          backgroundColor: COLORS.Orange,
-          borderRadius: 24,
-          padding: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          marginHorizontal: 16,
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: FONTSIZE.size_20,
-            color: COLORS.White,
-          }}
-        >
-          Tiếp tục
-        </Text>
+      <TouchableOpacity onPress={handleBookSeat} style={styles.btnContinue}>
+        <Text style={styles.textBtnContinue}>Tiếp tục</Text>
       </TouchableOpacity>
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.White,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: COLORS.Orange,
-    marginTop: 16,
-  },
-  showTimeButton: {
-    backgroundColor: COLORS.Orange,
-    borderRadius: 5,
-    marginTop: 10,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 16,
-  },
-  showTimeText: {
-    fontSize: 20,
-    color: COLORS.White,
-    fontFamily: "Roboto",
-  },
-});

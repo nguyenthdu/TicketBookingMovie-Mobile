@@ -7,12 +7,41 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.White,
   },
+  dropdown: {
+    height: 50,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
   btnGoBack: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
-    marginTop: 20,
     borderBottomColor: COLORS.Grey,
   },
   textStyle: {
@@ -77,5 +106,43 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
+  },
+  textBtnContinue: {
+    fontSize: FONTSIZE.size_20,
+    color: COLORS.White,
+    fontWeight: "bold",
+  },
+  // --------------------------------
+  btnQuantity: {
+    borderWidth: 1,
+    borderColor: COLORS.Orange,
+    borderRadius: 5,
+    padding: 5,
+  },
+  textQuantity: {
+    fontSize: FONTSIZE.size_16,
+    fontWeight: "bold",
+  },
+  // movie --------------------------
+  textMovie: {
+    fontSize: FONTSIZE.size_18,
+    fontWeight: "bold",
+  },
+  cardMovie: {
+    flex: 1 / 3,
+    flexDirection: "row",
+    backgroundColor: COLORS.White,
+    padding: 10,
+  },
+  cardTransaction: {
+    flex: 2 / 3,
+    backgroundColor: COLORS.White,
+    padding: 10,
+    marginBottom: 10,
+  },
+  cardPayment: {
+    flex: 1,
+    backgroundColor: COLORS.White,
+    padding: 10,
   },
 });

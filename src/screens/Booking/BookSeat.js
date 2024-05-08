@@ -1,273 +1,33 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
+import React, { useRef } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import Divider from "../../components/Divider/Divider";
-import Seat from "../../components/Seat/Seat";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
+import SeatMap from "../../components/Seat/SeatMap";
 import SeatOption from "../../components/Seat/SeatOption";
-import { fetchSeats } from "../../services/ShowTimeAPI";
-import { COLORS, FONTSIZE } from "../../theme/theme";
+import { COLORS } from "../../theme/theme";
 import styles from "./Styles";
-const { width, height } = Dimensions.get("window");
 
-//data seat
-const data = [
-  {
-    id: 1,
-    name: "A01",
-    row: 1,
-    col: 1,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 2,
-    name: "A02",
-    row: 1,
-    col: 2,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 3,
-    name: "A03",
-    row: 1,
-    col: 3,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 4,
-    name: "A04",
-    row: 1,
-    col: 4,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 5,
-    name: "A05",
-    row: 1,
-    col: 5,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 6,
-    name: "A06",
-    row: 1,
-    col: 6,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 7,
-    name: "A07",
-    row: 1,
-    col: 7,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 8,
-    name: "A08",
-    row: 1,
-    col: 8,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 9,
-    name: "A09",
-    row: 1,
-    col: 9,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 10,
-    name: "A10",
-    row: 1,
-    col: 10,
-    pirce: 100000,
-    status: 0,
-    type: "STANDARD",
-  },
-  {
-    id: 11,
-    name: "A11",
-    row: 1,
-    col: 11,
-    pirce: 100000,
-    status: 0,
-    type: "STANDARD",
-  },
-  {
-    id: 12,
-    name: "B01",
-    row: 2,
-    col: 1,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 13,
-    name: "B02",
-    row: 2,
-    col: 2,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 14,
-    name: "B03",
-    row: 2,
-    col: 3,
-    pirce: 100000,
-    status: 0,
-    type: "STANDARD",
-  },
-  {
-    id: 15,
-    name: "B04",
-    row: 2,
-    col: 4,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 16,
-    name: "B05",
-    row: 2,
-    col: 5,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 17,
-    name: "B06",
-    row: 2,
-    col: 6,
-    pirce: 100000,
-    status: 1,
-    type: "VIP",
-  },
-  {
-    id: 18,
-    name: "B07",
-    row: 2,
-    col: 7,
-    pirce: 100000,
-    status: 1,
-    type: "STANDARD",
-  },
-  {
-    id: 19,
-    name: "B08",
-    row: 2,
-    col: 8,
-    pirce: 100000,
-    status: 1,
-    type: "SWEETBOX",
-  },
-  {
-    id: 20,
-    name: "B09",
-    row: 2,
-    col: 9,
-    pirce: 100000,
-    status: 0,
-    type: "SWEETBOX",
-  },
-  {
-    id: 21,
-    name: "B10",
-    row: 2,
-    col: 10,
-    pirce: 100000,
-    status: 0,
-    type: "SWEETBOX",
-  },
-  {
-    id: 22,
-    name: "B11",
-    row: 2,
-    col: 11,
-    pirce: 100000,
-    status: 0,
-    type: "SWEETBOX",
-  },
-];
+const BookSeat = ({ navigation, route }) => {
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
 
-export default function BookSeat({ navigation, route }) {
-  const { isFocusTime } = route.params;
+  const selectedSeats = useSelector((state) => state.booking.selectedSeats);
 
-  const [selectedSeats, setSelectedSeats] = useState([]);
-  const [seatData, setSeatData] = useState([]);
-
-  useEffect(() => {
-    if (isFocusTime) {
-      fetchSeatData(isFocusTime.id);
-    }
-  }, [isFocusTime]);
-
-  const fetchSeatData = async (id) => {
-    const resSeatData = await fetchSeats(id);
-    setSeatData(resSeatData);
-    console.log("check seat: ", resSeatData[0]);
-  };
-
-  const renderSeat = ({ item }) => {
-    const { id, name, status, type } = item;
-
-    return (
-      <Seat
-        key={id}
-        seatData={item}
-        onPress={() => {
-          if (status === 1) {
-            if (selectedSeats.includes(name)) {
-              setSelectedSeats(selectedSeats.filter((seat) => seat !== name));
-            } else {
-              setSelectedSeats([...selectedSeats, name]);
-            }
-          }
-        }}
-      />
-    );
-  };
+  const zoomView = useRef();
 
   //handle book seat
   const handleBookSeat = () => {
-    navigation.navigate("Food", {});
-  };
-
-  // Hàm phân chia mảng thành các mảng con có độ dài cho trước
-  const chunkArray = (arr, chunkSize) => {
-    const chunkedArray = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-      chunkedArray.push(arr.slice(i, i + chunkSize));
+    if (selectedSeats.length === 0) {
+      showAlert("Vui lòng chọn ghế trước khi tiếp tục");
+      return;
     }
-    return chunkedArray;
+    navigation.navigate("Food", { cinemaId: route.params.cinemaId });
   };
 
   const handleGoBack = () => {
@@ -275,37 +35,53 @@ export default function BookSeat({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => handleGoBack()} style={styles.btnGoBack}>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.btnGoBack} onPress={() => handleGoBack()}>
         <MaterialIcons name="arrow-back" size={24} color="black" />
         <Text style={[styles.textStyle, styles.titleStyle]}>Đặt vé</Text>
       </TouchableOpacity>
-      <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
       {/* render danh sách ghế */}
       <View
         style={{
-          flex: 4.5 / 6,
-          flexDirection: "row",
+          flex: 4.1 / 6,
+          // flexDirection: "row",
           marginTop: 10,
+          marginHorizontal: 16,
+          backgroundColor: COLORS.White,
         }}
       >
-        <FlatList
-          data={chunkArray(data, 8)}
-          style={{ height: height / 2, width: width - 32 }}
-          keyExtractor={(dataChunk, index) => index.toString()}
-          renderItem={({ item: dataChunk }) => (
-            <FlatList
-              style={{
-                alignItems: "center",
-              }}
-              data={dataChunk}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={renderSeat}
-              numColumns={11}
-            />
-          )}
-          numColumns={1}
-        />
+        <ReactNativeZoomableView
+          ref={zoomView}
+          maxZoom={1.5}
+          minZoom={1}
+          zoomStep={0.5}
+          initialZoom={1}
+          bindToBorders={true}
+          onZoomAfter={(event, gestureState, zoomableViewEventObject) => {
+            // console.log("onZoomAfter", zoomableViewEventObject);
+            return null;
+          }}
+        >
+          <View style={{ width: "100%", paddingBottom: 5 }}>
+            <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
+            <Divider bdWidth={5} bdColor={COLORS.Yellow} lineWidth={40} />
+          </View>
+          <SeatMap />
+        </ReactNativeZoomableView>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity
+            style={styles.btnQuantity}
+            onPress={() => zoomView.current.zoomBy(-0.5)}
+          >
+            <MaterialIcons name="remove" size={24} color={COLORS.Orange} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnQuantity}
+            onPress={() => zoomView.current.zoomBy(0.5)}
+          >
+            <MaterialIcons name="add" size={24} color={COLORS.Orange} />
+          </TouchableOpacity>
+        </View>
       </View>
       <Divider />
       {/* Giải thích loại ghế */}
@@ -313,7 +89,7 @@ export default function BookSeat({ navigation, route }) {
         <View style={styles.SeatOptionContainer}>
           <SeatOption type="bd" color={COLORS.DarkGrey} label="Ghế thường" />
           <SeatOption type="bd" color={COLORS.Orange} label="Ghế vip" />
-          <SeatOption type="bd" color={COLORS.Purple} label="Ghế đôi" />
+          <SeatOption type="bd" color={COLORS.Pink} label="Ghế đôi" />
         </View>
         <View style={styles.SeatOptionContainer}>
           <SeatOption type="bgc" color={COLORS.DarkGrey} label="Ghế đã bán" />
@@ -322,19 +98,19 @@ export default function BookSeat({ navigation, route }) {
       </View>
       {/* hiện danh sách ghế đã chọn */}
       <Divider />
-      <View style={{ flex: 1.8 / 6 }}>
-        <BookingSummary selectedSeats={selectedSeats} selectedFoods={[]} />
+      <View style={{ flex: 2.2 / 6 }}>
+        <BookingSummary />
         <TouchableOpacity onPress={handleBookSeat} style={styles.btnContinue}>
-          <Text
-            style={{
-              color: COLORS.White,
-              fontSize: FONTSIZE.size_20,
-            }}
-          >
-            Tiếp tục
-          </Text>
+          <Text style={styles.textBtnContinue}>Tiếp tục</Text>
         </TouchableOpacity>
       </View>
-    </View>
+      <CustomAlert
+        modalVisible={modalVisible}
+        message={message}
+        hideAlert={hideAlert}
+      />
+    </SafeAreaView>
   );
-}
+};
+
+export default BookSeat;

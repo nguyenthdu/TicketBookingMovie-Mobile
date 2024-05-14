@@ -123,7 +123,7 @@ const SignUp = ({ navigation }) => {
       Toast.show({
         type: "success",
         text1: "Đăng ký thành công",
-        text2: resSignUp?.message.split(". ")[1],
+        text2: "Vui lòng vào gmail để xác thực!",
         visibilityTime: 2000,
         text1Style: { flexWrap: "wrap" },
         text2Style: { flexWrap: "wrap", fontSize: 13 },

@@ -7,6 +7,7 @@ import Spinner from "./src/components/Spin/Spin";
 import TabNavigator from "./src/navigators/TabNavigator";
 import { doSetIsLogged } from "./src/redux/isloggedIn/isloggedSlice";
 import { store } from "./src/redux/store";
+import { doSetUser } from "./src/redux/user/userSlice";
 import Food from "./src/screens/Booking/BookFood";
 import BookSeat from "./src/screens/Booking/BookSeat";
 import Payment from "./src/screens/Booking/Payment";
@@ -38,6 +39,7 @@ const AppNavigator = () => {
     if (userData !== null) {
       const { user, accessToken } = userData;
       console.log("data user:", user, accessToken);
+      dispatch(doSetUser(JSON.parse(user)));
       dispatch(doSetIsLogged(true));
     } else {
       dispatch(doSetIsLogged(false));

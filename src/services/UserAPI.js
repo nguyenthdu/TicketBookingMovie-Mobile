@@ -26,6 +26,19 @@ export const CallSignUp = async (
     );
     return response.data;
   } catch (error) {
+    console.log("error api đăng ký: ", error.response.data.message);
+
+    return error;
+  }
+};
+
+export const CallSignIn = async (email, password) => {
+  try {
+    const response = await axios.post(
+      `/api/users/signin?email=${email}&password=${password}`
+    );
+    return response.data;
+  } catch (error) {
     console.error("error api: ", error.response.data.message);
 
     return error;

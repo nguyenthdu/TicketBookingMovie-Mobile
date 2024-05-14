@@ -1,9 +1,15 @@
 import { AntDesign } from "@expo/vector-icons";
-import { React } from "react";
+import { React, useEffect } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 import Divider from "../../components/Divider/Divider";
+import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
 import { COLORS } from "../../theme/theme";
+import {
+  checkUserDataInAsyncStorage,
+  removeUserDataInAsyncStorage,
+} from "../../utils/AsyncStorage";
 import styles from "./Styles";
 
 const data = [
@@ -13,6 +19,26 @@ const data = [
 ];
 
 const ProfileScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const isLogged = useSelector((state) => state.isLogged.isLogged);
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    const userData = await checkUserDataInAsyncStorage();
+    if (userData !== null) {
+      const { user, accessToken } = userData;
+      console.log("data user:", user, accessToken);
+      dispatch(doSetIsLogged(true));
+    } else {
+      dispatch(doSetIsLogged(false));
+      console.log("not found");
+    }
+  };
+
   const handleSignUp = () => {
     navigation.navigate("SignUp");
   };
@@ -34,6 +60,22 @@ const ProfileScreen = ({ navigation }) => {
       </>
     );
   };
+
+  const handleUpdateProfile = () => {
+    console.log("Cập nhật thông tin người dùng");
+  };
+
+  const handleTransactionHistory = () => {
+    console.log("Xem lịch sử giao dịch");
+  };
+
+  const handleLogout = async () => {
+    console.log("Đăng xuất");
+    // xóa thông tin user và token trong AsyncStorage
+    await removeUserDataInAsyncStorage();
+    dispatch(doSetIsLogged(false));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[{ alignItems: "flex-start", paddingHorizontal: 10 }]}>
@@ -41,36 +83,58 @@ const ProfileScreen = ({ navigation }) => {
       </View>
       <Divider marginTop={1} lineWidth={1} />
       <View style={styles.mainContainer}>
-        <View style={[styles.main, styles.main1]}>
-          <View style={styles.registrationContainer}>
-            <Image
-              source={require("../../assets/images/infinity.png")}
-              style={styles.logo}
-            />
-            <Text style={styles.registrationText}>
-              Đăng ký thành viên InfinityCine để nhận ưu đãi đặc biệt!
-            </Text>
-          </View>
-          <View style={styles.buttonsContainer}>
+        {isLogged ? (
+          // Phần tử hiển thị thông tin người dùng nếu đã đăng nhập
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.userInfoText}>Thông tin của người dùng...</Text>
             <TouchableOpacity
-              onPress={() => handleSignUp()}
-              style={[styles.button, { backgroundColor: COLORS.Orange }]}
+              onPress={handleUpdateProfile}
+              style={styles.button}
             >
-              <Text style={styles.buttonText}>Đăng ký</Text>
+              <Text style={styles.buttonText}>Cập nhật thông tin</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleSignIn()}
-              style={[
-                styles.button,
-                { borderColor: COLORS.Orange, borderWidth: 1 },
-              ]}
+              onPress={handleTransactionHistory}
+              style={styles.button}
             >
-              <Text style={[styles.buttonText, { color: COLORS.Orange }]}>
-                Đăng Nhập
+              <Text style={styles.buttonText}>Xem lịch sử giao dịch</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout} style={styles.button}>
+              <Text style={styles.buttonText}>Đăng xuất</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={[styles.main, styles.main1]}>
+            <View style={styles.registrationContainer}>
+              <Image
+                source={require("../../assets/images/infinity.png")}
+                style={styles.logo}
+              />
+              <Text style={styles.registrationText}>
+                Đăng ký thành viên InfinityCine để nhận ưu đãi đặc biệt!
               </Text>
-            </TouchableOpacity>
+            </View>
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity
+                onPress={() => handleSignUp()}
+                style={[styles.button, { backgroundColor: COLORS.Orange }]}
+              >
+                <Text style={styles.buttonText}>Đăng ký</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleSignIn()}
+                style={[
+                  styles.button,
+                  { borderColor: COLORS.Orange, borderWidth: 1 },
+                ]}
+              >
+                <Text style={[styles.buttonText, { color: COLORS.Orange }]}>
+                  Đăng Nhập
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
 
         <View style={[styles.main, styles.main2]}>
           <FlatList

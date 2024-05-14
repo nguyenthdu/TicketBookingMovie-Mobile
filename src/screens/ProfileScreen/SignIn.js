@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 import { useDispatch } from "react-redux";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import Logo from "../../components/Logo/Logo";
+import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
 import { doSetLoading } from "../../redux/spin/spinSlice";
 import { CallSignIn } from "../../services/UserAPI";
 import { validateEmail, validatePassword } from "../../utils/validation";
@@ -45,7 +46,7 @@ const SignIn = ({ navigation }) => {
 
       // Save user info to storage or state management
       await AsyncStorage.setItem("user", JSON.stringify(response));
-
+      dispatch(doSetIsLogged(true));
       Toast.show({
         type: "success",
         position: "top",

@@ -39,8 +39,8 @@ export const CallSignIn = async (email, password) => {
     );
     return response.data;
   } catch (error) {
-    console.error("error api: ", error.response.data.message);
+    console.log("error đăng nhập api: ", error.response.data.message);
 
-    return error;
+    return error.response.data;
   }
 };

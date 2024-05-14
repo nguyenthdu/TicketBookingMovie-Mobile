@@ -1,15 +1,13 @@
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { React, useEffect } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import Divider from "../../components/Divider/Divider";
+import ExpenseSlider from "../../components/slider/ExpenseSlider";
 import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
 import { COLORS } from "../../theme/theme";
-import {
-  checkUserDataInAsyncStorage,
-  removeUserDataInAsyncStorage,
-} from "../../utils/AsyncStorage";
+import { removeUserDataInAsyncStorage } from "../../utils/AsyncStorage";
 import styles from "./Styles";
 
 const data = [
@@ -22,22 +20,11 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const isLogged = useSelector((state) => state.isLogged.isLogged);
+  const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    checkUser();
-  }, []);
-
-  const checkUser = async () => {
-    const userData = await checkUserDataInAsyncStorage();
-    if (userData !== null) {
-      const { user, accessToken } = userData;
-      console.log("data user:", user, accessToken);
-      dispatch(doSetIsLogged(true));
-    } else {
-      dispatch(doSetIsLogged(false));
-      console.log("not found");
-    }
-  };
+    console.log(user?.username);
+  }, [user]);
 
   const handleSignUp = () => {
     navigation.navigate("SignUp");
@@ -84,21 +71,33 @@ const ProfileScreen = ({ navigation }) => {
       <Divider marginTop={1} lineWidth={1} />
       <View style={styles.mainContainer}>
         {isLogged ? (
-          // Phần tử hiển thị thông tin người dùng nếu đã đăng nhập
           <View style={styles.userInfoContainer}>
-            <Text style={styles.userInfoText}>Thông tin của người dùng...</Text>
-            <TouchableOpacity
-              onPress={handleUpdateProfile}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Cập nhật thông tin</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleTransactionHistory}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Xem lịch sử giao dịch</Text>
-            </TouchableOpacity>
+            <View style={styles.userInfo}>
+              <Image
+                source={require("../../assets/images/avatarDefault.png")}
+                style={styles.avatar}
+              />
+              <Text style={styles.userName}>{user?.username}</Text>
+            </View>
+            <View style={styles.btnLoggedContainer}>
+              <TouchableOpacity
+                onPress={handleUpdateProfile}
+                style={styles.buttonLogged}
+              >
+                <AntDesign name="edit" size={24} color="white" />
+                <Text style={styles.buttonLoggedText}>Thông tin</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleTransactionHistory}
+                style={styles.buttonLogged}
+              >
+                <FontAwesome name="history" size={24} color="white" />
+                <Text style={styles.buttonLoggedText}>Giao dịch</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.expenseLoggedContainer}>
+              <ExpenseSlider />
+            </View>
             <TouchableOpacity onPress={handleLogout} style={styles.button}>
               <Text style={styles.buttonText}>Đăng xuất</Text>
             </TouchableOpacity>

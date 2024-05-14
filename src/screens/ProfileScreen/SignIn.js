@@ -45,7 +45,8 @@ const SignIn = ({ navigation }) => {
       await AsyncStorage.setItem("accessToken", response.accessToken);
 
       // Save user info to storage or state management
-      await AsyncStorage.setItem("user", JSON.stringify(response));
+      await AsyncStorage.setItem("user", JSON.parse(response));
+      dispatch(doSetUser(response));
       dispatch(doSetIsLogged(true));
       Toast.show({
         type: "success",

@@ -20,6 +20,8 @@ import MoviesUpcoming from "./src/screens/MoviesUpcoming";
 import ForgetPassword from "./src/screens/ProfileScreen/FogetPassword";
 import SignIn from "./src/screens/ProfileScreen/SignIn";
 import SignUp from "./src/screens/ProfileScreen/SignUp";
+import UpdateUser from "./src/screens/ProfileScreen/UpdateUser";
+import { CallGetUserById } from "./src/services/UserAPI";
 import { checkUserDataInAsyncStorage } from "./src/utils/AsyncStorage";
 
 const Stack = createNativeStackNavigator();
@@ -28,7 +30,6 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
-  // const isLogged = useSelector((state) => state.isLogged.isLogged);
 
   useEffect(() => {
     checkUser();
@@ -38,8 +39,11 @@ const AppNavigator = () => {
     const userData = await checkUserDataInAsyncStorage();
     if (userData !== null) {
       const { user, accessToken } = userData;
-      console.log("data user:", user, accessToken);
-      dispatch(doSetUser(JSON.parse(user)));
+      const resUser = await CallGetUserById(user.id);
+      console.log("resUser", resUser);
+      if (resUser) {
+        dispatch(doSetUser(resUser));
+      }
       dispatch(doSetIsLogged(true));
     } else {
       dispatch(doSetIsLogged(false));
@@ -65,6 +69,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Payment" component={Payment} />
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="UpdateUser" component={UpdateUser} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="VnPay" component={VnPay} />
         <Stack.Screen name="VerifyPayment" component={VnPayVerify} />

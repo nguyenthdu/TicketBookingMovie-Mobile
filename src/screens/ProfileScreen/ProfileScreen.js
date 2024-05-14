@@ -98,9 +98,6 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.expenseLoggedContainer}>
               <ExpenseSlider />
             </View>
-            <TouchableOpacity onPress={handleLogout} style={styles.button}>
-              <Text style={styles.buttonText}>Đăng xuất</Text>
-            </TouchableOpacity>
           </View>
         ) : (
           <View style={[styles.main, styles.main1]}>
@@ -141,6 +138,14 @@ const ProfileScreen = ({ navigation }) => {
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()} // Chỉ định một phương thức để tạo ra key duy nhất cho mỗi mục trong danh sách
           />
+        </View>
+        <View style={styles.btnLogoutLoggedContainer}>
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={styles.buttonLoggedLogout}
+          >
+            <Text style={styles.buttonLogoutLoggedText}>Đăng xuất</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

@@ -172,4 +172,22 @@ export default StyleSheet.create({
     width: "100%",
     backgroundColor: COLORS.White,
   },
+  buttonLoggedLogout: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    width: "100%",
+  },
+  buttonLogoutLoggedText: {
+    color: COLORS.Orange,
+    fontWeight: "400",
+    fontSize: FONTSIZE.size_16,
+  },
+  btnLogoutLoggedContainer: {
+    width: "100%",
+    flex: 1 / 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.White,
+  },
 });

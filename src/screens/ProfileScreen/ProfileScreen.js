@@ -1,5 +1,5 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { React, useEffect } from "react";
+import { React } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,9 +22,9 @@ const ProfileScreen = ({ navigation }) => {
   const isLogged = useSelector((state) => state.isLogged.isLogged);
   const user = useSelector((state) => state.user.user);
 
-  useEffect(() => {
-    console.log(user?.username);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log(user?.birthday);
+  // }, [user]);
 
   const handleSignUp = () => {
     navigation.navigate("SignUp");
@@ -49,7 +49,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleUpdateProfile = () => {
-    console.log("Cập nhật thông tin người dùng");
+    navigation.navigate("UpdateUser");
   };
 
   const handleTransactionHistory = () => {
@@ -139,14 +139,16 @@ const ProfileScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id.toString()} // Chỉ định một phương thức để tạo ra key duy nhất cho mỗi mục trong danh sách
           />
         </View>
-        <View style={styles.btnLogoutLoggedContainer}>
-          <TouchableOpacity
-            onPress={handleLogout}
-            style={styles.buttonLoggedLogout}
-          >
-            <Text style={styles.buttonLogoutLoggedText}>Đăng xuất</Text>
-          </TouchableOpacity>
-        </View>
+        {isLogged && (
+          <View style={styles.btnLogoutLoggedContainer}>
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={styles.buttonLoggedLogout}
+            >
+              <Text style={styles.buttonLogoutLoggedText}>Đăng xuất</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

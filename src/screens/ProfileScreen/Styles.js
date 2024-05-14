@@ -181,7 +181,7 @@ export default StyleSheet.create({
   buttonLogoutLoggedText: {
     color: COLORS.Orange,
     fontWeight: "400",
-    fontSize: FONTSIZE.size_16,
+    fontSize: FONTSIZE.size_20,
   },
   btnLogoutLoggedContainer: {
     width: "100%",
@@ -189,5 +189,17 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.White,
+  },
+  // --------------- UpdateUser --------
+  innerUpdate: {
+    flex: 1,
+    justifyContent: "flex-start",
+    marginTop: 10,
+    gap: 10,
+    width: "100%",
+  },
+  userInfoUpdate: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

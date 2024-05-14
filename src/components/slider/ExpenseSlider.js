@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 10,
+    marginBottom: 10,
+    paddingBottom: 10,
   },
 });
 

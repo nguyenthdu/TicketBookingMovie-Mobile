@@ -10,6 +10,7 @@ import CustomInput from "../../components/CustomInput/CustomInput";
 import Logo from "../../components/Logo/Logo";
 import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
 import { doSetLoading } from "../../redux/spin/spinSlice";
+import { doSetUser } from "../../redux/user/userSlice";
 import { CallSignIn } from "../../services/UserAPI";
 import { validateEmail, validatePassword } from "../../utils/validation";
 import styles from "./Styles";
@@ -45,7 +46,7 @@ const SignIn = ({ navigation }) => {
       await AsyncStorage.setItem("accessToken", response.accessToken);
 
       // Save user info to storage or state management
-      await AsyncStorage.setItem("user", JSON.parse(response));
+      await AsyncStorage.setItem("user", JSON.stringify(response));
       dispatch(doSetUser(response));
       dispatch(doSetIsLogged(true));
       Toast.show({

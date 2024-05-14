@@ -13,14 +13,20 @@ const CustomInput = ({
   error,
   handleShowPassword,
   showPassword,
+  editable = true,
 }) => {
   const handleChangeText = (text) => {
     onChangeText(text);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
+    <View style={[styles.container]}>
+      <View
+        style={[
+          styles.inputContainer,
+          !editable && { backgroundColor: COLORS.DarkGrey },
+        ]}
+      >
         <AntDesign
           name={icon}
           size={24}
@@ -28,7 +34,8 @@ const CustomInput = ({
           style={styles.icon}
         />
         <TextInput
-          style={styles.input}
+          editable={editable}
+          style={[styles.input]}
           placeholder={placeholder}
           placeholderTextColor={COLORS.DarkGrey}
           onChangeText={handleChangeText}

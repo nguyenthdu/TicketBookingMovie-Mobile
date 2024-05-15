@@ -1,5 +1,5 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { React } from "react";
+import { React, useEffect } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,10 +21,6 @@ const ProfileScreen = ({ navigation }) => {
 
   const isLogged = useSelector((state) => state.isLogged.isLogged);
   const user = useSelector((state) => state.user.user);
-
-  // useEffect(() => {
-  //   console.log(user?.birthday);
-  // }, [user]);
 
   const handleSignUp = () => {
     navigation.navigate("SignUp");

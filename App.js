@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import Toast from "react-native-toast-message";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import Spinner from "./src/components/Spin/Spin";
 import TabNavigator from "./src/navigators/TabNavigator";
 import { doSetIsLogged } from "./src/redux/isloggedIn/isloggedSlice";
@@ -30,6 +30,13 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const isLogged = useSelector((state) => state.isLogged.isLogged);
+
+  useEffect(() => {
+    console.log("user redux taij app", user);
+    console.log("islogged trong app", isLogged);
+  }, [user, isLogged]);
 
   useEffect(() => {
     checkUser();
@@ -37,14 +44,18 @@ const AppNavigator = () => {
 
   const checkUser = async () => {
     const userData = await checkUserDataInAsyncStorage();
+    console.log("userData trong app get local: ", userData);
     if (userData !== null) {
-      const { user, accessToken } = userData;
+      const { user } = userData;
       const resUser = await CallGetUserById(user.id);
       console.log("resUser", resUser);
-      if (resUser) {
+      if (resUser?.id) {
         dispatch(doSetUser(resUser));
+        dispatch(doSetIsLogged(true));
+      } else {
+        dispatch(doSetIsLogged(false));
+        console.log("not found");
       }
-      dispatch(doSetIsLogged(true));
     } else {
       dispatch(doSetIsLogged(false));
       console.log("not found");

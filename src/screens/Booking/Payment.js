@@ -14,8 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
+import { doSetLoading } from "../../redux/spin/spinSlice";
 import { fetchMoviesTrending } from "../../services/MoiveAPI";
-import { createInvoiceVnPay } from "../../services/invoice";
+import { createInvoice } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { PriceFood, PriceSeats } from "../../utils/bookingUtils";
 import {
@@ -67,22 +68,49 @@ export default function Payment({ navigation }) {
   }, []);
 
   //xử lý thanh toán
+  // const handlePayment = async () => {
+  //   console.log("user email: ", user?.email);
+  //   // dispatch(doSetLoading(true));
+  //   const resPayment = await createInvoiceVnPay(
+  //     totalPrice,
+  //     selectedShowTime.id,
+  //     selectedSeats,
+  //     selectedFoods,
+  //     user?.email
+  //   );
+  //   console.log("resPayment", resPayment);
+  //   if (resPayment?.status === 200) {
+  //     // dispatch(doSetLoading(false));
+  //     navigation.navigate("VnPay", { url: resPayment.message });
+  //   } else {
+  //     // dispatch(doSetLoading(false));
+  //     Toast.show({
+  //       type: "error",
+  //       text1: resPayment?.message || "Thanh toán thất bại",
+  //       visibilityTime: 2000,
+  //     });
+  //   }
+  // };
+
   const handlePayment = async () => {
     console.log("user email: ", user?.email);
-    // dispatch(doSetLoading(true));
-    const resPayment = await createInvoiceVnPay(
-      totalPrice,
+    dispatch(doSetLoading(true));
+    const resPayment = await createInvoice(
       selectedShowTime.id,
       selectedSeats,
       selectedFoods,
       user?.email
     );
     console.log("resPayment", resPayment);
+    dispatch(doSetLoading(false));
     if (resPayment?.status === 200) {
-      // dispatch(doSetLoading(false));
-      navigation.navigate("VnPay", { url: resPayment.message });
+      Toast.show({
+        type: "success",
+        text1: resPayment?.message,
+        visibilityTime: 2000,
+      });
+      // chuyển qua trang hóa đơn
     } else {
-      // dispatch(doSetLoading(false));
       Toast.show({
         type: "error",
         text1: resPayment?.message || "Thanh toán thất bại",

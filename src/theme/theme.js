@@ -8,7 +8,7 @@ export const COLORS = {
   OrangeRGBA0: "rgba(255,85,36,0)",
   Grey: "#DDDDDD",
   DarkGrey: "#B4B4B8",
-  LightGrey: "#F5F5F5",
+  LightGrey: "#f0f0f0",
   Yellow: "#E1CD17",
   White: "#FFFFFF",
   Pink: "#FF1493",

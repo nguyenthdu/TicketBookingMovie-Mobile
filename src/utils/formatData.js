@@ -130,3 +130,10 @@ export const getDayInfo = (date) => {
     ? "Hôm nay"
     : dayOfWeek;
 };
+
+//  format 2024-05-15 21:46 -> 21:46 15/05/2024
+export const formatDateTime = (dateTime) => {
+  const date = dateTime.split(" ")[0];
+  const time = dateTime.split(" ")[1];
+  return `${time} ${date.split("-").reverse().join("/")}`;
+};

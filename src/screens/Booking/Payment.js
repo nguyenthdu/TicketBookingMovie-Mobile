@@ -110,6 +110,7 @@ export default function Payment({ navigation }) {
         visibilityTime: 2000,
       });
       // chuyển qua trang hóa đơn
+      navigation.navigate("Home");
     } else {
       Toast.show({
         type: "error",

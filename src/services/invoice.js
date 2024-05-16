@@ -53,3 +53,23 @@ export const verifyPayment = async (queryParams) => {
     return error.response.data;
   }
 };
+
+export const getInvoicesByUserId = async (userId) => {
+  try {
+    const response = await axios.get(`/api/invoice?userId=${userId}`);
+    return response.data.content;
+  } catch (error) {
+    console.log("Error fetching invoices:", error.response.data.message);
+    return error.response.data;
+  }
+};
+
+export const getInvoiceDetail = async (invoiceId) => {
+  try {
+    const response = await axios.get(`/api/invoice/detail/${invoiceId}`);
+    return response.data;
+  } catch (error) {
+    console.log("Error fetching invoice detail:", error.response.data.message);
+    return error.response.data;
+  }
+};

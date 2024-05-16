@@ -19,6 +19,7 @@ import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
 import ForgetPassword from "./src/screens/ProfileScreen/FogetPassword";
 import HistoryInvoice from "./src/screens/ProfileScreen/HistoryInvoice";
+import InvoiceDetail from "./src/screens/ProfileScreen/InvoiceDetail";
 import SignIn from "./src/screens/ProfileScreen/SignIn";
 import SignUp from "./src/screens/ProfileScreen/SignUp";
 import UpdateUser from "./src/screens/ProfileScreen/UpdateUser";
@@ -81,6 +82,7 @@ const AppNavigator = () => {
         <Stack.Screen name="VnPay" component={VnPay} />
         <Stack.Screen name="VerifyPayment" component={VnPayVerify} />
         <Stack.Screen name="HistoryInvoice" component={HistoryInvoice} />
+        <Stack.Screen name="InvoiceDetail" component={InvoiceDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );

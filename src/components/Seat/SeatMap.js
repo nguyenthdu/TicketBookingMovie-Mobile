@@ -2,27 +2,15 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { doSetSelectedSeats } from "../../redux/booking/bookingSlice";
-import { fetchSeats, fetchTypeSeat } from "../../services/ShowTimeAPI";
+import { fetchSeats } from "../../services/ShowTimeAPI";
 import { COLORS } from "../../theme/theme";
 import NotificationMain, {
   CustomAlert,
 } from "../Notification/NotificationMain";
 import styles from "./Styles";
 
-const SeatMap = ({ isFocusTime }) => {
+const SeatMap = ({ typeSeat }) => {
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
-
-  const [typeSeat, setTypeSeat] = useState(null);
-
-  // fetch type seat để so sánh loại ghế
-  useEffect(() => {
-    getTypeSeat();
-  }, []);
-
-  const getTypeSeat = async () => {
-    const resTypeSeat = await fetchTypeSeat();
-    setTypeSeat(resTypeSeat);
-  };
 
   // redux
   const dispatch = useDispatch();
@@ -34,13 +22,19 @@ const SeatMap = ({ isFocusTime }) => {
   const [seatData, setSeatData] = useState([]);
 
   useEffect(() => {
-    if (selectedShowTime) {
+    if (selectedShowTime?.id) {
+      console.log("selectedShowTime: ", selectedShowTime.id);
       fetchSeatData(selectedShowTime.id);
     }
   }, [selectedShowTime]);
 
   const fetchSeatData = async (id) => {
     const resSeatData = await fetchSeats(id);
+    resSeatData.forEach((seat) => {
+      if (seat.status === false) {
+        console.log("seat đã đặt: ", seat);
+      }
+    });
     // Sắp xếp ghế theo hàng và cột
     const sortedSeatData = resSeatData.sort((a, b) => {
       if (a.seat.seatRow === b.seat.seatRow) {

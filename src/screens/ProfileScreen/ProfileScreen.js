@@ -1,11 +1,11 @@
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
-import { React, useEffect } from "react";
+import { React } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import Divider from "../../components/Divider/Divider";
-import ExpenseSlider from "../../components/slider/ExpenseSlider";
 import { doSetIsLogged } from "../../redux/isloggedIn/isloggedSlice";
+import { doSetUser } from "../../redux/user/userSlice";
 import { COLORS } from "../../theme/theme";
 import { removeUserDataInAsyncStorage } from "../../utils/AsyncStorage";
 import styles from "./Styles";
@@ -49,13 +49,14 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleTransactionHistory = () => {
-    console.log("Xem lịch sử giao dịch");
+    navigation.navigate("HistoryInvoice");
   };
 
   const handleLogout = async () => {
     console.log("Đăng xuất");
     // xóa thông tin user và token trong AsyncStorage
     await removeUserDataInAsyncStorage();
+    dispatch(doSetUser(null));
     dispatch(doSetIsLogged(false));
   };
 
@@ -91,9 +92,9 @@ const ProfileScreen = ({ navigation }) => {
                 <Text style={styles.buttonLoggedText}>Giao dịch</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.expenseLoggedContainer}>
+            {/* <View style={styles.expenseLoggedContainer}>
               <ExpenseSlider />
-            </View>
+            </View> */}
           </View>
         ) : (
           <View style={[styles.main, styles.main1]}>

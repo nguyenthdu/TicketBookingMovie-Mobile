@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import NotificationMain, {
 } from "../../components/Notification/NotificationMain";
 import SeatMap from "../../components/Seat/SeatMap";
 import SeatOption from "../../components/Seat/SeatOption";
+import { fetchTypeSeat } from "../../services/ShowTimeAPI";
 import { COLORS } from "../../theme/theme";
 import styles from "./Styles";
 
@@ -20,6 +21,18 @@ const BookSeat = ({ navigation, route }) => {
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
 
   const zoomView = useRef();
+
+  const [typeSeat, setTypeSeat] = useState(null);
+
+  // fetch type seat để so sánh loại ghế
+  useEffect(() => {
+    getTypeSeat();
+  }, []);
+
+  const getTypeSeat = async () => {
+    const resTypeSeat = await fetchTypeSeat();
+    setTypeSeat(resTypeSeat);
+  };
 
   //handle book seat
   const handleBookSeat = () => {
@@ -66,7 +79,7 @@ const BookSeat = ({ navigation, route }) => {
             <Text style={[styles.textStyle, styles.textScreen]}>Màn hình</Text>
             <Divider bdWidth={5} bdColor={COLORS.Yellow} lineWidth={40} />
           </View>
-          <SeatMap />
+          <SeatMap typeSeat={typeSeat} />
         </ReactNativeZoomableView>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <TouchableOpacity

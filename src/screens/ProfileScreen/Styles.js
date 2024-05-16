@@ -189,6 +189,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.White,
+    marginBottom: 20,
   },
   // --------------- UpdateUser --------
   innerUpdate: {

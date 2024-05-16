@@ -18,6 +18,7 @@ import MovieDetail from "./src/screens/MovieScreen/MovieDetail";
 import MoviesShowing from "./src/screens/MoviesShowing";
 import MoviesUpcoming from "./src/screens/MoviesUpcoming";
 import ForgetPassword from "./src/screens/ProfileScreen/FogetPassword";
+import HistoryInvoice from "./src/screens/ProfileScreen/HistoryInvoice";
 import SignIn from "./src/screens/ProfileScreen/SignIn";
 import SignUp from "./src/screens/ProfileScreen/SignUp";
 import UpdateUser from "./src/screens/ProfileScreen/UpdateUser";
@@ -46,10 +47,12 @@ const AppNavigator = () => {
         dispatch(doSetUser(resUser));
         dispatch(doSetIsLogged(true));
       } else {
+        dispatch(doSetUser(null));
         dispatch(doSetIsLogged(false));
         console.log("not found");
       }
     } else {
+      dispatch(doSetUser(null));
       dispatch(doSetIsLogged(false));
       console.log("not found");
     }
@@ -77,6 +80,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="VnPay" component={VnPay} />
         <Stack.Screen name="VerifyPayment" component={VnPayVerify} />
+        <Stack.Screen name="HistoryInvoice" component={HistoryInvoice} />
       </Stack.Navigator>
     </NavigationContainer>
   );

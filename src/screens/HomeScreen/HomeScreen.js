@@ -14,6 +14,8 @@ import {
 import CustomFlatList from "../../components/FlatList/CustomFlatList";
 import { COLORS } from "../../theme/theme";
 
+import Toast from "react-native-toast-message";
+import { useSelector } from "react-redux";
 import {
   fetchMoviesShowing,
   fetchMoviesTrending,
@@ -69,7 +71,22 @@ const HomeScreen = ({ navigation }) => {
     fetchOtherMovies();
   }, []);
 
-  // Render your UI here...
+  const user = useSelector((state) => state.user.user);
+
+  const handleMovieShowTime = (item) => {
+    if (!user?.id) {
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Vui lòng đăng nhập để xem thông tin chi tiết",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      navigation.navigate("SignIn");
+      return;
+    }
+    navigation.navigate("ShowTime", { movie: item });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -117,9 +134,7 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ShowTime", { movie: item });
-                }}
+                onPress={() => handleMovieShowTime(item)}
                 style={{
                   backgroundColor: COLORS.Orange,
                   borderRadius: 24,
@@ -180,9 +195,7 @@ const HomeScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("ShowTime", { movie: item });
-                }}
+                onPress={() => handleMovieShowTime(item)}
                 style={{
                   backgroundColor: COLORS.Orange,
                   borderRadius: 24,

@@ -5,7 +5,7 @@ export const counterSlice = createSlice({
   name: "counter",
   initialState: {
     isRunning: false,
-    countdownTime: 0,
+    countdownTime: 420,
   },
   reducers: {
     doSetIsRunning: (state, action) => {

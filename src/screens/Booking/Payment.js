@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Dimensions,
   FlatList,
@@ -15,8 +15,8 @@ import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
 import CountUp from "../../components/Spin/CountUp";
+import { doSetIsRunning } from "../../redux/counter/counterSlice";
 import { doSetLoading } from "../../redux/spin/spinSlice";
-import { fetchMoviesTrending } from "../../services/MoiveAPI";
 import { createInvoice } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { PriceFood, PriceSeats } from "../../utils/bookingUtils";
@@ -55,20 +55,6 @@ export default function Payment({ navigation }) {
   );
   const isRunning = useSelector((state) => state.counter.isRunning);
 
-  const [movie, setMovie] = useState();
-
-  useEffect(() => {
-    const fetchMovie = async () => {
-      try {
-        const data = await fetchMoviesTrending();
-        setMovie(data[0]);
-      } catch (error) {
-        console.error("Error fetching movie:", error);
-      }
-    };
-    fetchMovie();
-  }, []);
-
   //xử lý thanh toán
   // const handlePayment = async () => {
   //   console.log("user email: ", user?.email);
@@ -96,6 +82,7 @@ export default function Payment({ navigation }) {
 
   const handlePayment = async () => {
     console.log("user email: ", user?.email);
+    dispatch(doSetIsRunning(false));
     dispatch(doSetLoading(true));
     const resPayment = await createInvoice(
       selectedShowTime.id,
@@ -116,7 +103,7 @@ export default function Payment({ navigation }) {
     } else {
       Toast.show({
         type: "error",
-        text1: resPayment?.message || "Thanh toán thất bại",
+        text1: resPayment?.message || "Thanh toán thất bại!",
         visibilityTime: 2000,
       });
     }
@@ -139,7 +126,7 @@ export default function Payment({ navigation }) {
           backgroundColor: COLORS.Grey,
         }}
       >
-        {isRunning && <CountUp startTime={410} />}
+        {isRunning && <CountUp />}
         {/* phim */}
         <View style={styles.cardMovie}>
           <Image

@@ -11,7 +11,6 @@ import NotificationMain, {
 } from "../../components/Notification/NotificationMain";
 import SeatMap from "../../components/Seat/SeatMap";
 import SeatOption from "../../components/Seat/SeatOption";
-import { doResetBooking } from "../../redux/booking/bookingSlice";
 import { doSetIsRunning } from "../../redux/counter/counterSlice";
 import {
   callCheckHoldSeat,
@@ -29,7 +28,6 @@ const BookSeat = ({ navigation, route }) => {
   const selectedShowTime = useSelector(
     (state) => state.booking.selectedShowTime
   );
-  const isRunning = useSelector((state) => state.booking.isRunning);
 
   const zoomView = useRef();
 
@@ -45,8 +43,11 @@ const BookSeat = ({ navigation, route }) => {
     setTypeSeat(resTypeSeat);
   };
 
-  const fetchCheckSeat = async (selectedSeat, showTimeId) => {
-    const resCheckHoldSeat = await callCheckHoldSeat(selectedSeat, showTimeId);
+  // ----------giữ ghế trong 7 phút----------
+
+  // kiểm tra ghế đã được chọn có bị ai chọn trước không
+  const fetchCheckSeat = async (seats, showTimeId) => {
+    const resCheckHoldSeat = await callCheckHoldSeat(seats, showTimeId);
     if (resCheckHoldSeat?.status === 200) {
       if (resCheckHoldSeat.message === null) {
         return false;
@@ -54,30 +55,6 @@ const BookSeat = ({ navigation, route }) => {
         showAlert(resCheckHoldSeat.message);
         return true;
       }
-    }
-  };
-
-  useEffect(() => {
-    if (isRunning) {
-      const interval = setInterval(() => {
-        handleFinish();
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isRunning]);
-
-  const handleFinish = async () => {
-    const resHoldSeats = await callHoldSeats(
-      selectedSeats,
-      selectedShowTime.id,
-      true
-    );
-    if (resHoldSeats?.status === 200) {
-      console.log("resHoldSeats trong: ", resHoldSeats);
-      dispatch(doSetIsRunning(false));
-      showAlert("Đã hết thời gian giữ ghế, vui lòng chọn lại!");
-      navigation.navigate("Home");
-      dispatch(doResetBooking());
     }
   };
 
@@ -100,7 +77,7 @@ const BookSeat = ({ navigation, route }) => {
     if (selectedSeats.length === 0) {
       showAlert("Vui lòng chọn ghế trước khi tiếp tục");
       return;
-    } else if (selectedSeats.length > 0) {
+    } else {
       const checkSeat = await fetchCheckSeat(
         selectedSeats,
         selectedShowTime.id
@@ -111,10 +88,10 @@ const BookSeat = ({ navigation, route }) => {
         const checkedHold = await fetchHoldSeatTrue(false);
         if (checkedHold) {
           dispatch(doSetIsRunning(true));
+          navigation.navigate("Food", { cinemaId: route.params.cinemaId });
         }
       }
     }
-    navigation.navigate("Food", { cinemaId: route.params.cinemaId });
   };
 
   const handleGoBack = () => {

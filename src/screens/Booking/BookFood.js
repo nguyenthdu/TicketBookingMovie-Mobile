@@ -23,7 +23,10 @@ import {
   doSetSelectedFoods,
   doSetSelectedPromotionFood,
 } from "../../redux/booking/bookingSlice";
-import { doSetIsRunning } from "../../redux/counter/counterSlice";
+import {
+  doSetIsRunning,
+  resetCountdownTime,
+} from "../../redux/counter/counterSlice";
 import { getAllFood } from "../../services/FoodAPI";
 import { fetchPromotionByFood } from "../../services/PromotionAPI";
 import { callHoldSeats } from "../../services/ShowTimeAPI";
@@ -138,6 +141,7 @@ const Food = ({ route, navigation }) => {
       status
     );
     if (resHoldSeats?.status === 200) {
+      dispatch(resetCountdownTime(420));
       return true;
     } else {
       showAlert(resHoldSeats.response.data.message);
@@ -149,13 +153,9 @@ const Food = ({ route, navigation }) => {
     const checkedHold = await fetchHoldSeatTrue(true);
     if (checkedHold) {
       dispatch(doSetIsRunning(false));
+      navigation.goBack();
     }
-    navigation.goBack();
   };
-
-  useEffect(() => {
-    console.log("isrunning: ", isRunning);
-  }, [isRunning]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -172,7 +172,7 @@ const Food = ({ route, navigation }) => {
           flex: 1,
         }}
       >
-        {isRunning && <CountUp startTime={420} />}
+        {isRunning && <CountUp />}
 
         {food.length === 0 ? (
           <Text>Hiện tại rạp chưa có tính năng chọn đồ ăn online!</Text>
@@ -242,7 +242,7 @@ const Food = ({ route, navigation }) => {
                     bottom: height * 0.05,
                   }}
                 >
-                  {item.price || item.quantity === 0 ? (
+                  {item.price && item.quantity > 0 ? (
                     <QuantitySelector
                       quantity={
                         selectedFoods.find((food) => food.id === item.id)

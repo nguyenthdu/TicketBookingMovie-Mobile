@@ -7,12 +7,12 @@ import { doResetBooking } from "../../redux/booking/bookingSlice";
 import {
   decrementCountdownTime,
   doSetIsRunning,
-  setCountdownTime,
+  resetCountdownTime,
 } from "../../redux/counter/counterSlice";
 import { callHoldSeats } from "../../services/ShowTimeAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 
-const CountUp = ({ startTime }) => {
+const CountUp = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
@@ -22,13 +22,7 @@ const CountUp = ({ startTime }) => {
   const countdownTime = useSelector((state) => state.counter.countdownTime);
 
   useEffect(() => {
-    dispatch(setCountdownTime(startTime));
-    dispatch(doSetIsRunning(true));
-  }, [startTime]);
-
-  useEffect(() => {
     if (countdownTime === 0) {
-      dispatch(doSetIsRunning(false));
       handleFinish();
     }
   }, [countdownTime]);
@@ -48,9 +42,11 @@ const CountUp = ({ startTime }) => {
       });
       navigation.navigate("Home");
       dispatch(doResetBooking());
+      dispatch(resetCountdownTime(420));
     }
   };
 
+  // giải thích
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(decrementCountdownTime());

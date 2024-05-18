@@ -3,7 +3,7 @@ import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-vi
 import React, { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import Divider from "../../components/Divider/Divider";
 import NotificationMain, {
@@ -11,14 +11,25 @@ import NotificationMain, {
 } from "../../components/Notification/NotificationMain";
 import SeatMap from "../../components/Seat/SeatMap";
 import SeatOption from "../../components/Seat/SeatOption";
-import { fetchTypeSeat } from "../../services/ShowTimeAPI";
+import { doResetBooking } from "../../redux/booking/bookingSlice";
+import { doSetIsRunning } from "../../redux/counter/counterSlice";
+import {
+  callCheckHoldSeat,
+  callHoldSeats,
+  fetchTypeSeat,
+} from "../../services/ShowTimeAPI";
 import { COLORS } from "../../theme/theme";
 import styles from "./Styles";
 
 const BookSeat = ({ navigation, route }) => {
   const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
+  const dispatch = useDispatch();
 
   const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+  const selectedShowTime = useSelector(
+    (state) => state.booking.selectedShowTime
+  );
+  const isRunning = useSelector((state) => state.booking.isRunning);
 
   const zoomView = useRef();
 
@@ -34,11 +45,74 @@ const BookSeat = ({ navigation, route }) => {
     setTypeSeat(resTypeSeat);
   };
 
+  const fetchCheckSeat = async (selectedSeat, showTimeId) => {
+    const resCheckHoldSeat = await callCheckHoldSeat(selectedSeat, showTimeId);
+    if (resCheckHoldSeat?.status === 200) {
+      if (resCheckHoldSeat.message === null) {
+        return false;
+      } else {
+        showAlert(resCheckHoldSeat.message);
+        return true;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isRunning) {
+      const interval = setInterval(() => {
+        handleFinish();
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isRunning]);
+
+  const handleFinish = async () => {
+    const resHoldSeats = await callHoldSeats(
+      selectedSeats,
+      selectedShowTime.id,
+      true
+    );
+    if (resHoldSeats?.status === 200) {
+      console.log("resHoldSeats trong: ", resHoldSeats);
+      dispatch(doSetIsRunning(false));
+      showAlert("Đã hết thời gian giữ ghế, vui lòng chọn lại!");
+      navigation.navigate("Home");
+      dispatch(doResetBooking());
+    }
+  };
+
+  const fetchHoldSeatTrue = async (status) => {
+    const resHoldSeats = await callHoldSeats(
+      selectedSeats,
+      selectedShowTime.id,
+      status
+    );
+    if (resHoldSeats?.status === 200) {
+      return true;
+    } else {
+      showAlert(resHoldSeats.response.data.message);
+      return false;
+    }
+  };
+
   //handle book seat
-  const handleBookSeat = () => {
+  const handleBookSeat = async () => {
     if (selectedSeats.length === 0) {
       showAlert("Vui lòng chọn ghế trước khi tiếp tục");
       return;
+    } else if (selectedSeats.length > 0) {
+      const checkSeat = await fetchCheckSeat(
+        selectedSeats,
+        selectedShowTime.id
+      );
+      if (checkSeat) {
+        return;
+      } else {
+        const checkedHold = await fetchHoldSeatTrue(false);
+        if (checkedHold) {
+          dispatch(doSetIsRunning(true));
+        }
+      }
     }
     navigation.navigate("Food", { cinemaId: route.params.cinemaId });
   };

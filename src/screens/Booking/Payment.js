@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
+import CountUp from "../../components/Spin/CountUp";
 import { doSetLoading } from "../../redux/spin/spinSlice";
 import { fetchMoviesTrending } from "../../services/MoiveAPI";
 import { createInvoice } from "../../services/invoice";
@@ -52,6 +53,7 @@ export default function Payment({ navigation }) {
   const selectedPromotionFood = useSelector(
     (state) => state.booking.selectedPromotionFood
   );
+  const isRunning = useSelector((state) => state.counter.isRunning);
 
   const [movie, setMovie] = useState();
 
@@ -137,6 +139,7 @@ export default function Payment({ navigation }) {
           backgroundColor: COLORS.Grey,
         }}
       >
+        {isRunning && <CountUp startTime={410} />}
         {/* phim */}
         <View style={styles.cardMovie}>
           <Image

@@ -20,5 +20,5 @@ export const locations = [
   { label: "Củ Chi", value: "Củ Chi" },
   { label: "Hóc Môn", value: "Hóc Môn" },
   { label: "Nhà Bè", value: "Nhà Bè" },
-  { label: "Thủ Đức", value: "Quận Thủ Đức" },
+  { label: "Thủ Đức", value: "Thành phố Thủ Đức" },
 ];

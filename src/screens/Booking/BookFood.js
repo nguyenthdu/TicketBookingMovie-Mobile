@@ -14,13 +14,19 @@ import { useDispatch, useSelector } from "react-redux";
 import imageWarning from "../../assets/images/warning.png";
 import BookingSummary from "../../components/Booking/BookingSummary";
 import QuantitySelector from "../../components/Booking/QuantitySelector";
+import NotificationMain, {
+  CustomAlert,
+} from "../../components/Notification/NotificationMain";
 import NotificationPromotion from "../../components/Notification/NotificationPromotion";
+import CountUp from "../../components/Spin/CountUp";
 import {
   doSetSelectedFoods,
   doSetSelectedPromotionFood,
 } from "../../redux/booking/bookingSlice";
+import { doSetIsRunning } from "../../redux/counter/counterSlice";
 import { getAllFood } from "../../services/FoodAPI";
 import { fetchPromotionByFood } from "../../services/PromotionAPI";
+import { callHoldSeats } from "../../services/ShowTimeAPI";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { formatCurrency } from "../../utils/formatData";
 import styles from "./Styles";
@@ -29,14 +35,20 @@ const { width, height } = Dimensions.get("window");
 
 const Food = ({ route, navigation }) => {
   const { cinemaId } = route.params;
+  const { showAlert, modalVisible, message, hideAlert } = NotificationMain();
   const dispatch = useDispatch();
   const selectedFoods = useSelector((state) => state.booking.selectedFoods);
   const selectedPromotionFood = useSelector(
     (state) => state.booking.selectedPromotionFood
   );
+  const selectedShowTime = useSelector(
+    (state) => state.booking.selectedShowTime
+  );
+  const selectedSeats = useSelector((state) => state.booking.selectedSeats);
+  const isRunning = useSelector((state) => state.counter.isRunning);
 
   const [food, setFood] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
+  const [modalVisiblea, setModalVisible] = useState(false); // State để điều khiển việc hiển thị NotificationPromotion
   const [promotion, setPromotion] = useState(null); // State để lưu promotion hiện tại
 
   // fetch promotion by food
@@ -119,9 +131,31 @@ const Food = ({ route, navigation }) => {
     navigation.navigate("Payment");
   };
 
-  const handleGoBack = () => {
+  const fetchHoldSeatTrue = async (status) => {
+    const resHoldSeats = await callHoldSeats(
+      selectedSeats,
+      selectedShowTime.id,
+      status
+    );
+    if (resHoldSeats?.status === 200) {
+      return true;
+    } else {
+      showAlert(resHoldSeats.response.data.message);
+      return false;
+    }
+  };
+
+  const handleGoBack = async () => {
+    const checkedHold = await fetchHoldSeatTrue(true);
+    if (checkedHold) {
+      dispatch(doSetIsRunning(false));
+    }
     navigation.goBack();
   };
+
+  useEffect(() => {
+    console.log("isrunning: ", isRunning);
+  }, [isRunning]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -138,6 +172,8 @@ const Food = ({ route, navigation }) => {
           flex: 1,
         }}
       >
+        {isRunning && <CountUp startTime={420} />}
+
         {food.length === 0 ? (
           <Text>Hiện tại rạp chưa có tính năng chọn đồ ăn online!</Text>
         ) : (
@@ -237,8 +273,13 @@ const Food = ({ route, navigation }) => {
         </TouchableOpacity>
         <NotificationPromotion
           promotion={promotion}
-          modalVisible={modalVisible}
+          modalVisible={modalVisiblea}
           handleClose={() => setModalVisible(false)}
+        />
+        <CustomAlert
+          modalVisible={modalVisible}
+          message={message}
+          hideAlert={hideAlert}
         />
       </View>
     </SafeAreaView>

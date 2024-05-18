@@ -145,4 +145,11 @@ export default StyleSheet.create({
     backgroundColor: COLORS.White,
     padding: 10,
   },
+  // --------------------------------
+  countdown: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
 });

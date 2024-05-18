@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
+import CountUp from "../../components/Spin/CountUp";
 import { doSetLoading } from "../../redux/spin/spinSlice";
 import { fetchMoviesTrending } from "../../services/MoiveAPI";
 import { createInvoice } from "../../services/invoice";
@@ -34,6 +35,7 @@ const data = [{ id: 1, title: "Thanh toán thông qua ứng dụng VNPAY" }];
 export default function Payment({ navigation }) {
   const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.user.user);
   const selectedMovie = useSelector((state) => state.booking.selectedMovie);
   const selectedShowTime = useSelector(
     (state) => state.booking.selectedShowTime
@@ -51,6 +53,7 @@ export default function Payment({ navigation }) {
   const selectedPromotionFood = useSelector(
     (state) => state.booking.selectedPromotionFood
   );
+  const isRunning = useSelector((state) => state.counter.isRunning);
 
   const [movie, setMovie] = useState();
 
@@ -67,24 +70,50 @@ export default function Payment({ navigation }) {
   }, []);
 
   //xử lý thanh toán
+  // const handlePayment = async () => {
+  //   console.log("user email: ", user?.email);
+  //   // dispatch(doSetLoading(true));
+  //   const resPayment = await createInvoiceVnPay(
+  //     totalPrice,
+  //     selectedShowTime.id,
+  //     selectedSeats,
+  //     selectedFoods,
+  //     user?.email
+  //   );
+  //   console.log("resPayment", resPayment);
+  //   if (resPayment?.status === 200) {
+  //     // dispatch(doSetLoading(false));
+  //     navigation.navigate("VnPay", { url: resPayment.message });
+  //   } else {
+  //     // dispatch(doSetLoading(false));
+  //     Toast.show({
+  //       type: "error",
+  //       text1: resPayment?.message || "Thanh toán thất bại",
+  //       visibilityTime: 2000,
+  //     });
+  //   }
+  // };
+
   const handlePayment = async () => {
+    console.log("user email: ", user?.email);
     dispatch(doSetLoading(true));
     const resPayment = await createInvoice(
       selectedShowTime.id,
       selectedSeats,
-      selectedFoods
+      selectedFoods,
+      user?.email
     );
     console.log("resPayment", resPayment);
+    dispatch(doSetLoading(false));
     if (resPayment?.status === 200) {
-      dispatch(doSetLoading(false));
       Toast.show({
         type: "success",
-        text1: resPayment?.message || "Thanh toán thành công",
+        text1: resPayment?.message,
         visibilityTime: 2000,
       });
+      // chuyển qua trang hóa đơn
       navigation.navigate("Home");
     } else {
-      dispatch(doSetLoading(false));
       Toast.show({
         type: "error",
         text1: resPayment?.message || "Thanh toán thất bại",
@@ -110,6 +139,7 @@ export default function Payment({ navigation }) {
           backgroundColor: COLORS.Grey,
         }}
       >
+        {isRunning && <CountUp startTime={410} />}
         {/* phim */}
         <View style={styles.cardMovie}>
           <Image

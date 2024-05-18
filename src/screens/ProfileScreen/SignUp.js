@@ -12,6 +12,12 @@ import Logo from "../../components/Logo/Logo";
 import { doSetLoading } from "../../redux/spin/spinSlice";
 import { CallSignUp } from "../../services/UserAPI";
 import { dateFormatYYMMDD } from "../../utils/formatData";
+import {
+  validateEmail,
+  validatePassword,
+  validatePhoneNumber,
+  validateUserName,
+} from "../../utils/validation";
 import styles from "./Styles";
 
 const SignUp = ({ navigation }) => {
@@ -34,69 +40,24 @@ const SignUp = ({ navigation }) => {
     setShowPassword(!showPassword);
   };
 
-  // hiện ra các thông báo lỗi tương ứng với từng regex của mỗi trường
-  // regex không được để trống cho toàn bộ các trường
-  // regex cho userName: chỉ chứa ký tự chữ cái và khoảng trắng, tối thiểu 2 ký tự
-  // regex cho gmail của google: không chứa khoảng trắng, có ký tự @, phía sau là @gmail.com, hoặc @yahoo.com, hoặc @outlook.com, hoặc @icloud.com
-  // regex cho số điện thoại: chỉ chứa số, độ dài 10 ký tự, bắt đầu là: 032, 033, 034, 035, 036, 037, 038, 039, 070, 079, 077, 076, 078, 083, 084, 085, 081, 082, 088, 091, 094, 096, 098, 092, 056, 058, 099, 059, còn lại 8 số
-  // regex cho ngày tháng năm sinh: có dạng dd/mm/yyyy, ví dụ: 01/01/2000
-  // regex cho mật khẩu: chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số, và ký đặt biệt
-  // regex cho nhập lại mật khẩu: giống với mật khẩu
-
-  const regexes = {
-    userName: /^[a-zA-Z ]{2,}$/,
-    email: /^[a-zA-Z0-9._%+-]+@(gmail|yahoo|outlook|icloud)\.com$/,
-    phoneNumber:
-      /^(03[2-9]|07[0-9]|08[1-9]|09[1|2|4|6|8|2|6|8]|05[6|8|9]|059|099)\d{7}$/,
-    // dateOfBirth: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
-    password:
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-  };
-
   const handleInputUserName = (text) => {
     setUserName(text);
-    if (!text.trim()) {
-      setErrorUserName("Tên không được để trống");
-    } else if (text.length < 2) {
-      setErrorUserName("Tên cần ít nhất 2 ký tự");
-    } else if (!/^[a-zA-Z ]+$/.test(text)) {
-      setErrorUserName("Tên chỉ được chứa ký tự chữ cái và khoảng trắng");
-    } else {
-      setErrorUserName("");
-    }
+    setErrorUserName(validateUserName(text));
   };
 
   const handleInputEmail = (text) => {
     setEmail(text);
-    if (text === "") {
-      setErrorEmail("Email không được để trống");
-    } else if (!regexes.email.test(text)) {
-      setErrorEmail("Email không hợp lệ");
-    } else {
-      setErrorEmail("");
-    }
+    setErrorEmail(validateEmail(text));
   };
 
   const handleInputPhoneNumber = (text) => {
     setPhoneNumber(text);
-    if (!regexes.phoneNumber.test(text)) {
-      setErrorPhoneNumber("Số điện thoại không hợp lệ");
-    } else if (text === "") {
-      setErrorPhoneNumber("Số điện thoại không được để trống");
-    } else {
-      setErrorPhoneNumber("");
-    }
+    setErrorPhoneNumber(validatePhoneNumber(text));
   };
 
   const handleInputPassword = (text) => {
     setPassword(text);
-    if (text === "") {
-      setErrorPassword("Mật khẩu không được để trống");
-    } else if (!regexes.password.test(text)) {
-      setErrorPassword("Mật khẩu không hợp lệ");
-    } else {
-      setErrorPassword("");
-    }
+    setErrorPassword(validatePassword(text));
   };
 
   const handleSelectGender = (option) => {
@@ -162,12 +123,15 @@ const SignUp = ({ navigation }) => {
       Toast.show({
         type: "success",
         text1: "Đăng ký thành công",
+        text2: "Vui lòng vào gmail để xác thực!",
         visibilityTime: 2000,
+        text1Style: { flexWrap: "wrap" },
+        text2Style: { flexWrap: "wrap", fontSize: 13 },
       });
       navigation.navigate("SignIn");
     } else {
       dispatch(doSetLoading(false));
-      console.error("error SignUp: ", resSignUp);
+      console.log("error SignUp: ", resSignUp);
       Toast.show({
         type: "error",
         text1: `${resSignUp?.message || "Đăng ký thất bại"}`,

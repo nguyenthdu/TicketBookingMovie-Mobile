@@ -46,3 +46,31 @@ export const fetchTypeSeat = async () => {
     return error;
   }
 };
+
+// check giữ ghế
+export const callCheckHoldSeat = async (seats, showTimeId) => {
+  const seatIds = seats.map((seat) => seat.id).join(",");
+
+  try {
+    const response = await axios.get(
+      `/api/showtime/seat?seatIds=${seatIds}&showTimeId=${showTimeId}`
+    );
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// giữ ghế
+export const callHoldSeats = async (seats, showTimeId, status) => {
+  const seatIds = seats.map((seat) => seat.id).join(",");
+
+  try {
+    const response = await axios.post(
+      `/api/showtime/seat?seatIds=${seatIds}&showTimeId=${showTimeId}&status=${status}`
+    );
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};

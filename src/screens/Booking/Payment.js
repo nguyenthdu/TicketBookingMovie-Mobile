@@ -15,9 +15,7 @@ import PaymentItem from "../../components/Booking/PaymentItem";
 import PromotionItem from "../../components/Booking/PromotionItem";
 import Divider from "../../components/Divider/Divider";
 import CountUp from "../../components/Spin/CountUp";
-import { doSetIsRunning } from "../../redux/counter/counterSlice";
-import { doSetLoading } from "../../redux/spin/spinSlice";
-import { createInvoice } from "../../services/invoice";
+import { createInvoiceVnPay } from "../../services/invoice";
 import { COLORS, FONTSIZE } from "../../theme/theme";
 import { PriceFood, PriceSeats } from "../../utils/bookingUtils";
 import {
@@ -56,58 +54,58 @@ export default function Payment({ navigation }) {
   const isRunning = useSelector((state) => state.counter.isRunning);
 
   //xử lý thanh toán
-  // const handlePayment = async () => {
-  //   console.log("user email: ", user?.email);
-  //   // dispatch(doSetLoading(true));
-  //   const resPayment = await createInvoiceVnPay(
-  //     totalPrice,
-  //     selectedShowTime.id,
-  //     selectedSeats,
-  //     selectedFoods,
-  //     user?.email
-  //   );
-  //   console.log("resPayment", resPayment);
-  //   if (resPayment?.status === 200) {
-  //     // dispatch(doSetLoading(false));
-  //     navigation.navigate("VnPay", { url: resPayment.message });
-  //   } else {
-  //     // dispatch(doSetLoading(false));
-  //     Toast.show({
-  //       type: "error",
-  //       text1: resPayment?.message || "Thanh toán thất bại",
-  //       visibilityTime: 2000,
-  //     });
-  //   }
-  // };
-
   const handlePayment = async () => {
     console.log("user email: ", user?.email);
-    dispatch(doSetIsRunning(false));
-    dispatch(doSetLoading(true));
-    const resPayment = await createInvoice(
+    // dispatch(doSetLoading(true));
+    const resPayment = await createInvoiceVnPay(
+      totalPrice,
       selectedShowTime.id,
       selectedSeats,
       selectedFoods,
       user?.email
     );
     console.log("resPayment", resPayment);
-    dispatch(doSetLoading(false));
     if (resPayment?.status === 200) {
-      Toast.show({
-        type: "success",
-        text1: resPayment?.message,
-        visibilityTime: 2000,
-      });
-      // chuyển qua trang hóa đơn
-      navigation.navigate("Home");
+      // dispatch(doSetLoading(false));
+      navigation.navigate("VnPay", { url: resPayment.message });
     } else {
+      // dispatch(doSetLoading(false));
       Toast.show({
         type: "error",
-        text1: resPayment?.message || "Thanh toán thất bại!",
+        text1: resPayment?.message || "Thanh toán thất bại",
         visibilityTime: 2000,
       });
     }
   };
+
+  // const handlePayment = async () => {
+  //   console.log("user email: ", user?.email);
+  //   dispatch(doSetIsRunning(false));
+  //   dispatch(doSetLoading(true));
+  //   const resPayment = await createInvoice(
+  //     selectedShowTime.id,
+  //     selectedSeats,
+  //     selectedFoods,
+  //     user?.email
+  //   );
+  //   console.log("resPayment", resPayment);
+  //   dispatch(doSetLoading(false));
+  //   if (resPayment?.status === 200) {
+  //     Toast.show({
+  //       type: "success",
+  //       text1: resPayment?.message,
+  //       visibilityTime: 2000,
+  //     });
+  //     // chuyển qua trang hóa đơn
+  //     navigation.navigate("Home");
+  //   } else {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: resPayment?.message || "Thanh toán thất bại!",
+  //       visibilityTime: 2000,
+  //     });
+  //   }
+  // };
 
   const handleGoBack = () => {
     navigation.goBack();
